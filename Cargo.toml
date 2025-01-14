@@ -1,0 +1,12 @@
+[package]
+name = "markitdown"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+calamine = "0.26.1"
+infer = "0.15"
+lopdf = "0.34"
+mime_guess = "2.0.5"
+pdf-extract = "0.8.0"
+serde = { version = "1", features = ["derive"] }
