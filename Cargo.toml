@@ -5,8 +5,10 @@ edition = "2021"
 
 [dependencies]
 calamine = "0.26.1"
+html2md = "0.2.15"
 infer = "0.15"
 lopdf = "0.34"
 mime_guess = "2.0.5"
 pdf-extract = "0.8.0"
+regex = "1.11.1"
 serde = { version = "1", features = ["derive"] }

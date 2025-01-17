@@ -12,7 +12,7 @@ It supports:
 - [x] PDF
 - [ ] Images
 - [ ] Audio
-- [ ] HTML
+- [x] HTML
 - [ ] Text-based formats (plain text, .csv, .xml, .rss, .atom)
 - [ ] ZIP
 

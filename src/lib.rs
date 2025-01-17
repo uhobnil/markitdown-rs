@@ -1,8 +1,10 @@
 pub mod excel;
+pub mod html;
 pub mod model;
 pub mod pdf;
 
 use excel::ExcelConverter;
+use html::HtmlConverter;
 use infer;
 use mime_guess::MimeGuess;
 use model::{ConversionOptions, DocumentConverter, DocumentConverterResult};
@@ -20,6 +22,7 @@ impl MarkItDown {
         };
 
         md.register_converter(Box::new(ExcelConverter));
+        md.register_converter(Box::new(HtmlConverter));
         md.register_converter(Box::new(PdfConverter));
 
         md
