@@ -16,18 +16,40 @@ It supports:
 - [ ] Text-based formats (plain text, .csv, .xml, .rss, .atom)
 - [ ] ZIP
 
-## Installation
+## Usage
+
+### Command-Line
+
+#### Installation
+
+```
+cargo install markitdown
+```
+
+#### Convert a File
+
+```
+markitdown path-to-file.pdf
+```
+
+Or use -o to specify the output file:
+
+```
+markitdown path-to-file.pdf -o document.md
+```
+
+### Rust API
+
+#### Installation
 
 Add the following to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-markitdown = "0.1.0"
+markitdown = "0.1.1"
 ```
 
-## Usage
-
-### Initialize MarkItDown
+#### Initialize MarkItDown
 
 ```rust
 use markitdown::MarkItDown;
@@ -35,7 +57,7 @@ use markitdown::MarkItDown;
 let mut md = MarkItDown::new();
 ```
 
-### Convert a File
+#### Convert a File
 
 ```rust
 use markitdown::{ConversionOptions, DocumentConverterResult};
@@ -54,7 +76,7 @@ if let Some(conversion_result) = result {
 }
 ```
 
-### Register a Custom Converter
+#### Register a Custom Converter
 
 You can extend MarkItDown by implementing the `DocumentConverter` trait for your custom converters and registering them:
 
