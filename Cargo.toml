@@ -2,9 +2,13 @@
 name = "markitdown"
 version = "0.1.0"
 edition = "2021"
+description = "A Rust library designed to facilitate the conversion of various document formats into markdown text."
+repository = "https://github.com/uhobnil/markitdown-rs"
+license = "MIT"
 
 [dependencies]
 calamine = "0.26.1"
+clap = { version = "4.5.27", features = ["derive"] }
 html2md = "0.2.15"
 infer = "0.15"
 lopdf = "0.34"
