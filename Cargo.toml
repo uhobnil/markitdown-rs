@@ -13,7 +13,7 @@ html2md = "0.2.15"
 infer = "0.15"
 lopdf = "0.34"
 mime_guess = "2.0.5"
-docx = { git = "https://github.com/tuxmark5/docx-rs.git"}
+docx = { version = "1.1.2", git = "https://github.com/tuxmark5/docx-rs.git"}
 pdf-extract = "0.8.0"
 regex = "1.11.1"
 serde = { version = "1", features = ["derive"] }
