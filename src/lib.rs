@@ -1,8 +1,10 @@
+pub mod docx;
 pub mod excel;
 pub mod html;
 pub mod model;
 pub mod pdf;
 
+use docx::DocxConverter;
 use excel::ExcelConverter;
 use html::HtmlConverter;
 use infer;
@@ -24,6 +26,7 @@ impl MarkItDown {
         md.register_converter(Box::new(ExcelConverter));
         md.register_converter(Box::new(HtmlConverter));
         md.register_converter(Box::new(PdfConverter));
+        md.register_converter(Box::new(DocxConverter));
 
         md
     }
