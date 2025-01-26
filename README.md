@@ -7,7 +7,7 @@ markitdown-rs is a Rust library designed to facilitate the conversion of various
 It supports:
 
 - [x] Excel(.xlsx)
-- [ ] Word
+- [x] Word(.docx)
 - [ ] PowerPoint
 - [x] PDF
 - [ ] Images
@@ -46,7 +46,7 @@ Add the following to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-markitdown = "0.1.1"
+markitdown = "0.1.2"
 ```
 
 #### Initialize MarkItDown
