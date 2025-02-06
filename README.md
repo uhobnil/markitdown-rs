@@ -8,7 +8,7 @@ It supports:
 
 - [x] Excel(.xlsx)
 - [x] Word(.docx)
-- [ ] PowerPoint
+- [x] PowerPoint
 - [x] PDF
 - [ ] Images
 - [ ] Audio
@@ -46,7 +46,7 @@ Add the following to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-markitdown = "0.1.2"
+markitdown = "0.1.3"
 ```
 
 #### Initialize MarkItDown

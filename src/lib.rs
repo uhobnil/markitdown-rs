@@ -3,6 +3,7 @@ pub mod excel;
 pub mod html;
 pub mod model;
 pub mod pdf;
+pub mod pptx;
 
 use docx::DocxConverter;
 use excel::ExcelConverter;
@@ -11,6 +12,7 @@ use infer;
 use mime_guess::MimeGuess;
 use model::{ConversionOptions, DocumentConverter, DocumentConverterResult};
 use pdf::PdfConverter;
+use pptx::PptxConverter;
 use std::{collections::HashMap, path::Path};
 
 pub struct MarkItDown {
@@ -26,6 +28,7 @@ impl MarkItDown {
         md.register_converter(Box::new(ExcelConverter));
         md.register_converter(Box::new(HtmlConverter));
         md.register_converter(Box::new(PdfConverter));
+        md.register_converter(Box::new(PptxConverter));
         md.register_converter(Box::new(DocxConverter));
 
         md
