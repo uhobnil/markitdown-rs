@@ -18,4 +18,4 @@ pdf-extract = "0.8.0"
 regex = "1.11.1"
 serde = { version = "1", features = ["derive"] }
 quick-xml = "0.37.2"
-zip = { version = "*", default-features = false, features = ["deflate", "aes-crypto", "time"] }
+zip = { version = "2.2.2", default-features = false, features = ["deflate", "aes-crypto", "time"] }
