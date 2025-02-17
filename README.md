@@ -72,7 +72,7 @@ let options = ConversionOptions {
 // To use Large Language Models for image descriptions, provide llm_client and llm_model, like:
 
 let options = ConversionOptions {
-    file_extension: Some(".xlsx".to_string()),
+    file_extension: Some(".jpg".to_string()),
     url: None,
     llm_client: "gemini".to_string(),
     llm_model: "gemini-2.0-flash".to_string(),
