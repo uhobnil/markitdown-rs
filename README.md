@@ -65,6 +65,17 @@ use markitdown::{ConversionOptions, DocumentConverterResult};
 let options = ConversionOptions {
     file_extension: Some(".xlsx".to_string()),
     url: None,
+    llm_client: None,
+    llm_model: None,
+};
+
+// To use Large Language Models for image descriptions, provide llm_client and llm_model, like:
+
+let options = ConversionOptions {
+    file_extension: Some(".xlsx".to_string()),
+    url: None,
+    llm_client: "gemini".to_string(),
+    llm_model: "gemini-2.0-flash".to_string(),
 };
 
 let result: Option<DocumentConverterResult> = md.convert("path/to/file.xlsx", Some(options));
