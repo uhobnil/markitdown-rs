@@ -2,7 +2,6 @@ use markitdown::{
     image::ImageConverter,
     model::{ConversionOptions, DocumentConverter},
 };
-use rig::providers::gemini;
 
 #[test]
 fn test_image_conversion() {
@@ -10,7 +9,7 @@ fn test_image_conversion() {
     let options = ConversionOptions {
         file_extension: Some(".jpg".to_string()),
         url: None,
-        llm_client: Some(gemini::Client::from_env()),
+        llm_client: Some("gemini".to_string()),
         llm_model: Some("gemini-2.0-flash".to_string()),
     };
 
