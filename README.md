@@ -10,7 +10,7 @@ It supports:
 - [x] Word(.docx)
 - [x] PowerPoint
 - [x] PDF
-- [ ] Images
+- [x] Images
 - [ ] Audio
 - [x] HTML
 - [ ] Text-based formats (plain text, .csv, .xml, .rss, .atom)
@@ -46,7 +46,7 @@ Add the following to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-markitdown = "0.1.3"
+markitdown = "0.1.4"
 ```
 
 #### Initialize MarkItDown

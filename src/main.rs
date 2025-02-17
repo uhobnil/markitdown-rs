@@ -48,6 +48,8 @@ fn main() {
                 Some(format!(".{}", format))
             },
             url: None,
+            llm_client: None,
+            llm_model: None,
         }),
     );
 

@@ -1,19 +1,20 @@
 use markitdown::{
+    image::ImageConverter,
     model::{ConversionOptions, DocumentConverter},
-    pdf::PdfConverter,
 };
+use rig::providers::gemini;
 
 #[test]
-fn test_pdf_conversion() {
-    let converter = PdfConverter;
+fn test_image_conversion() {
+    let converter = ImageConverter;
     let options = ConversionOptions {
-        file_extension: Some(".pdf".to_string()),
+        file_extension: Some(".jpg".to_string()),
         url: None,
-        llm_client: None,
-        llm_model: None,
+        llm_client: Some(gemini::Client::from_env()),
+        llm_model: Some("gemini-2.0-flash".to_string()),
     };
 
-    let result = converter.convert("tests/test_files/test.pdf", Some(options));
+    let result = converter.convert("tests/test_files/test.jpg", Some(options));
     write_to_file(&result.as_ref().unwrap().text_content);
     assert!(result.is_some());
 }

@@ -9,6 +9,8 @@ fn test_docx_conversion() {
     let options = ConversionOptions {
         file_extension: Some(".docx".to_string()),
         url: None,
+        llm_client: None,
+        llm_model: None,
     };
 
     let result = converter.convert("tests/test_files/test.docx", Some(options));

@@ -10,6 +10,8 @@ pub struct DocumentConverterResult {
 pub struct ConversionOptions {
     pub file_extension: Option<String>,
     pub url: Option<String>,
+    pub llm_client: Option<String>,
+    pub llm_model: Option<String>,
 }
 
 pub trait DocumentConverter {

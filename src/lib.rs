@@ -1,6 +1,8 @@
 pub mod docx;
 pub mod excel;
 pub mod html;
+pub mod image;
+pub mod llm;
 pub mod model;
 pub mod pdf;
 pub mod pptx;
@@ -8,6 +10,7 @@ pub mod pptx;
 use docx::DocxConverter;
 use excel::ExcelConverter;
 use html::HtmlConverter;
+use image::ImageConverter;
 use infer;
 use mime_guess::MimeGuess;
 use model::{ConversionOptions, DocumentConverter, DocumentConverterResult};
@@ -27,6 +30,7 @@ impl MarkItDown {
 
         md.register_converter(Box::new(ExcelConverter));
         md.register_converter(Box::new(HtmlConverter));
+        md.register_converter(Box::new(ImageConverter));
         md.register_converter(Box::new(PdfConverter));
         md.register_converter(Box::new(PptxConverter));
         md.register_converter(Box::new(DocxConverter));
@@ -98,6 +102,8 @@ impl MarkItDown {
             args = Some(ConversionOptions {
                 file_extension: self.detect_file_type(source),
                 url: None,
+                llm_client: None,
+                llm_model: None,
             });
         }
 

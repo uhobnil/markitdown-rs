@@ -9,6 +9,8 @@ fn test_html_conversion() {
     let options = ConversionOptions {
         file_extension: Some(".html".to_string()),
         url: None,
+        llm_client: None,
+        llm_model: None,
     };
 
     let result = converter.convert("tests/test_files/test_blog.html", Some(options));
