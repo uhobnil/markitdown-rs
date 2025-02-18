@@ -74,8 +74,8 @@ let options = ConversionOptions {
 let options = ConversionOptions {
     file_extension: Some(".jpg".to_string()),
     url: None,
-    llm_client: "gemini".to_string(),
-    llm_model: "gemini-2.0-flash".to_string(),
+    llm_client: Some("gemini".to_string()),
+    llm_model: Some("gemini-2.0-flash".to_string()),
 };
 
 let result: Option<DocumentConverterResult> = md.convert("path/to/file.xlsx", Some(options));
