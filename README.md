@@ -13,7 +13,8 @@ It supports:
 - [x] Images
 - [ ] Audio
 - [x] HTML
-- [ ] Text-based formats (plain text, .csv, .xml, .rss, .atom)
+- [x] CSV(UTF-8)
+- [ ] Text-based formats (.xml, .rss, .atom)
 - [ ] ZIP
 
 ## Usage
@@ -46,7 +47,7 @@ Add the following to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-markitdown = "0.1.4"
+markitdown = "0.1.5"
 ```
 
 #### Initialize MarkItDown
@@ -69,6 +70,8 @@ let options = ConversionOptions {
     llm_model: None,
 };
 
+let result: Option<DocumentConverterResult> = md.convert("path/to/file.xlsx", Some(options));
+
 // To use Large Language Models for image descriptions, provide llm_client and llm_model, like:
 
 let options = ConversionOptions {
@@ -78,7 +81,7 @@ let options = ConversionOptions {
     llm_model: Some("gemini-2.0-flash".to_string()),
 };
 
-let result: Option<DocumentConverterResult> = md.convert("path/to/file.xlsx", Some(options));
+let result: Option<DocumentConverterResult> = md.convert("path/to/file.jpg", Some(options));
 
 if let Some(conversion_result) = result {
     println!("Converted Text: {}", conversion_result.text_content);

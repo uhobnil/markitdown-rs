@@ -1,4 +1,3 @@
-use lopdf::Document;
 use pdf_extract;
 
 use crate::model::{ConversionOptions, DocumentConverter, DocumentConverterResult};

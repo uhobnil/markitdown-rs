@@ -1,3 +1,4 @@
+pub mod csv;
 pub mod docx;
 pub mod excel;
 pub mod html;
@@ -7,6 +8,7 @@ pub mod model;
 pub mod pdf;
 pub mod pptx;
 
+use csv::CsvConverter;
 use docx::DocxConverter;
 use excel::ExcelConverter;
 use html::HtmlConverter;
@@ -28,6 +30,7 @@ impl MarkItDown {
             converters: Vec::new(),
         };
 
+        md.register_converter(Box::new(CsvConverter));
         md.register_converter(Box::new(ExcelConverter));
         md.register_converter(Box::new(HtmlConverter));
         md.register_converter(Box::new(ImageConverter));
