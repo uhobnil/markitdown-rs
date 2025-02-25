@@ -1,6 +1,6 @@
 [package]
 name = "markitdown"
-version = "0.1.6"
+version = "0.1.7"
 edition = "2021"
 description = "A Rust library designed to facilitate the conversion of various document formats into markdown text."
 repository = "https://github.com/uhobnil/markitdown-rs"
@@ -26,3 +26,4 @@ base64 = "0.22.1"
 rig-core = "0.8.0"
 # rss = "2.0.12"
 feed-rs = "2.3.1"
+tempfile = "3.17.1"

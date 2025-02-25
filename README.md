@@ -15,7 +15,7 @@ It supports:
 - [x] HTML
 - [x] CSV(UTF-8)
 - [x] Text-based formats (.xml, .rss, .atom)
-- [ ] ZIP
+- [x] ZIP
 
 ## Usage
 
@@ -47,7 +47,7 @@ Add the following to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-markitdown = "0.1.6"
+markitdown = "0.1.7"
 ```
 
 #### Initialize MarkItDown

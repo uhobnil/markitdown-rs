@@ -14,13 +14,17 @@ use docx::DocxConverter;
 use excel::ExcelConverter;
 use html::HtmlConverter;
 use image::ImageConverter;
-use rss::RssConverter;
 use infer;
 use mime_guess::MimeGuess;
 use model::{ConversionOptions, DocumentConverter, DocumentConverterResult};
 use pdf::PdfConverter;
 use pptx::PptxConverter;
+use rss::RssConverter;
+use std::io::Cursor;
 use std::{collections::HashMap, path::Path};
+use std::{fs, io};
+use tempfile::tempdir;
+use zip::ZipArchive;
 
 pub struct MarkItDown {
     converters: Vec<Box<dyn DocumentConverter>>,
@@ -111,6 +115,52 @@ impl MarkItDown {
                 llm_client: None,
                 llm_model: None,
             });
+        }
+
+        if let Some(opts) = &args {
+            if let Some(ext) = &opts.file_extension {
+                if ext == ".zip" {
+                    let data = fs::read(source).unwrap();
+                    let cursor = Cursor::new(data);
+                    let mut archive = ZipArchive::new(cursor).expect("Failed to read ZIP archive");
+
+                    let zip_name = Path::new(source).file_name().unwrap().to_str().unwrap();
+                    let mut markdown =
+                        String::from(format!("Content from the zip file {}\n", zip_name).as_str());
+
+                    for i in 0..archive.len() {
+                        let mut file = archive
+                            .by_index(i)
+                            .expect("Failed to access file in ZIP archive");
+                        let file_name = file.name().to_string();
+                        let dir = tempdir().unwrap();
+                        let file_path = dir.path().join(&file_name);
+                        let mut temp_file = fs::File::create(&file_path).unwrap();
+                        io::copy(&mut file, &mut temp_file).unwrap();
+                        for converter in &self.converters {
+                            let file_args = Some(ConversionOptions {
+                                file_extension: self.detect_file_type(file_path.to_str().unwrap()),
+                                url: None,
+                                llm_client: None,
+                                llm_model: None,
+                            });
+                            if let Some(result) =
+                                converter.convert(&file_path.to_str().unwrap(), file_args.clone())
+                            {
+                                markdown
+                                    .push_str(format!("\n## File: {}\n\n", &file_name).as_str());
+                                markdown.push_str(format!("{}\n", result.text_content).as_str());
+                            }
+                        }
+
+                        std::fs::remove_file(&file_path).expect("Failed to delete the file");
+                    }
+                    return Some(DocumentConverterResult {
+                        title: None,
+                        text_content: markdown,
+                    });
+                }
+            }
         }
 
         for converter in &self.converters {
