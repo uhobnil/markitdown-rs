@@ -7,12 +7,14 @@ pub mod llm;
 pub mod model;
 pub mod pdf;
 pub mod pptx;
+pub mod rss;
 
 use csv::CsvConverter;
 use docx::DocxConverter;
 use excel::ExcelConverter;
 use html::HtmlConverter;
 use image::ImageConverter;
+use rss::RssConverter;
 use infer;
 use mime_guess::MimeGuess;
 use model::{ConversionOptions, DocumentConverter, DocumentConverterResult};
@@ -34,6 +36,7 @@ impl MarkItDown {
         md.register_converter(Box::new(ExcelConverter));
         md.register_converter(Box::new(HtmlConverter));
         md.register_converter(Box::new(ImageConverter));
+        md.register_converter(Box::new(RssConverter));
         md.register_converter(Box::new(PdfConverter));
         md.register_converter(Box::new(PptxConverter));
         md.register_converter(Box::new(DocxConverter));

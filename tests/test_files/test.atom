@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/" xml:lang="en-US">
+  <id>tag:github.com,2008:/NixOS/nixpkgs/commits/nixos-unstable</id>
+  <link type="text/html" rel="alternate" href="https://github.com/NixOS/nixpkgs/commits/nixos-unstable"/>
+  <link type="application/atom+xml" rel="self" href="https://github.com/NixOS/nixpkgs/commits/nixos-unstable.atom"/>
+  <title>Recent Commits to nixpkgs:nixos-unstable</title>
+  <updated>2025-02-21T08:21:39Z</updated>
+  <entry>
+    <id>tag:github.com,2008:Grit::Commit/32fb99ba93fea2798be0e997ea331dd78167f814</id>
+    <link type="text/html" rel="alternate" href="https://github.com/NixOS/nixpkgs/commit/32fb99ba93fea2798be0e997ea331dd78167f814"/>
+    <title>
+        Merge branch &#39;master&#39; into staging-next
+    </title>
+    <updated>2025-02-21T08:21:39Z</updated>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/u/1785925?s=30&amp;v=4"/>
+    <author>
+      <name>vcunat</name>
+      <uri>https://github.com/vcunat</uri>
+    </author>
+    <content type="html">
+      &lt;pre style=&#39;white-space:pre-wrap;width:81ex&#39;&gt;Merge branch &amp;#39;master&amp;#39; into staging-next&lt;/pre&gt;
+    </content>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Grit::Commit/9049f88bf4dde94debecec408947585e0ae929f4</id>
+    <link type="text/html" rel="alternate" href="https://github.com/NixOS/nixpkgs/commit/9049f88bf4dde94debecec408947585e0ae929f4"/>
+    <title>
+        nixos/iso-image: fix build (#383859)
+    </title>
+    <updated>2025-02-21T08:19:53Z</updated>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/u/386765?s=30&amp;v=4"/>
+    <author>
+      <name>K900</name>
+      <uri>https://github.com/K900</uri>
+    </author>
+    <content type="html">
+      &lt;pre style=&#39;white-space:pre-wrap;width:81ex&#39;&gt;nixos/iso-image: fix build (#383859)&lt;/pre&gt;
+    </content>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Grit::Commit/31aa4c5fefd7b53bbfb4ba52f25edb6da47bdf3f</id>
+    <link type="text/html" rel="alternate" href="https://github.com/NixOS/nixpkgs/commit/31aa4c5fefd7b53bbfb4ba52f25edb6da47bdf3f"/>
+    <title>
+        nixos/iso-image: fix build
+    </title>
+    <updated>2025-02-21T08:19:14Z</updated>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/u/386765?s=30&amp;v=4"/>
+    <author>
+      <name>K900</name>
+      <uri>https://github.com/K900</uri>
+    </author>
+    <content type="html">
+      &lt;pre style=&#39;white-space:pre-wrap;width:81ex&#39;&gt;nixos/iso-image: fix build&lt;/pre&gt;
+    </content>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Grit::Commit/81fb1e75f07067d3e754d92162113343175ee961</id>
+    <link type="text/html" rel="alternate" href="https://github.com/NixOS/nixpkgs/commit/81fb1e75f07067d3e754d92162113343175ee961"/>
+    <title>
+        ludtwig: 0.9.0 -&gt; 0.10.0 (#383814)
+    </title>
+    <updated>2025-02-21T07:16:03Z</updated>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/in/409421?s=30&amp;v=4"/>
+    <author>
+      <name>nixpkgs-merge-bot</name>
+      <uri>https://github.com/nixpkgs-merge-bot</uri>
+    </author>
+    <content type="html">
+      &lt;pre style=&#39;white-space:pre-wrap;width:81ex&#39;&gt;ludtwig: 0.9.0 -&amp;gt; 0.10.0 (#383814)
+
+Co-authored-by: MalteJanz &amp;lt;MalteJanz@users.noreply.github.com&amp;gt;&lt;/pre&gt;
+    </content>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Grit::Commit/6e47699cb6cffda7e03cecfcbfb8774ab20177d0</id>
+    <link type="text/html" rel="alternate" href="https://github.com/NixOS/nixpkgs/commit/6e47699cb6cffda7e03cecfcbfb8774ab20177d0"/>
+    <title>
+        ser2net: 4.6.3 -&gt; 4.6.4 (#383779)
+    </title>
+    <updated>2025-02-21T07:06:00Z</updated>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/in/409421?s=30&amp;v=4"/>
+    <author>
+      <name>nixpkgs-merge-bot</name>
+      <uri>https://github.com/nixpkgs-merge-bot</uri>
+    </author>
+    <content type="html">
+      &lt;pre style=&#39;white-space:pre-wrap;width:81ex&#39;&gt;ser2net: 4.6.3 -&amp;gt; 4.6.4 (#383779)
+
+Co-authored-by: Emantor &amp;lt;Emantor@users.noreply.github.com&amp;gt;&lt;/pre&gt;
+    </content>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Grit::Commit/cd7bd857f9784489aedf27c82af335e1e768dce8</id>
+    <link type="text/html" rel="alternate" href="https://github.com/NixOS/nixpkgs/commit/cd7bd857f9784489aedf27c82af335e1e768dce8"/>
+    <title>
+        bitrise: 2.27.0 -&gt; 2.29.1 (#383759)
+    </title>
+    <updated>2025-02-21T06:32:39Z</updated>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/in/409421?s=30&amp;v=4"/>
+    <author>
+      <name>nixpkgs-merge-bot</name>
+      <uri>https://github.com/nixpkgs-merge-bot</uri>
+    </author>
+    <content type="html">
+      &lt;pre style=&#39;white-space:pre-wrap;width:81ex&#39;&gt;bitrise: 2.27.0 -&amp;gt; 2.29.1 (#383759)
+
+Co-authored-by: ofalvai &amp;lt;ofalvai@users.noreply.github.com&amp;gt;&lt;/pre&gt;
+    </content>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Grit::Commit/7c7cd4013789354a73494fe51fb7cd4dbe992e7c</id>
+    <link type="text/html" rel="alternate" href="https://github.com/NixOS/nixpkgs/commit/7c7cd4013789354a73494fe51fb7cd4dbe992e7c"/>
+    <title>
+        ecapture: 0.9.3 -&gt; 0.9.4 (#383841)
+    </title>
+    <updated>2025-02-21T06:17:31Z</updated>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/in/409421?s=30&amp;v=4"/>
+    <author>
+      <name>nixpkgs-merge-bot</name>
+      <uri>https://github.com/nixpkgs-merge-bot</uri>
+    </author>
+    <content type="html">
+      &lt;pre style=&#39;white-space:pre-wrap;width:81ex&#39;&gt;ecapture: 0.9.3 -&amp;gt; 0.9.4 (#383841)
+
+Co-authored-by: Bot-wxt1221 &amp;lt;3264117476@qq.com&amp;gt;&lt;/pre&gt;
+    </content>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Grit::Commit/0c3729a9d60c1442fff160b23cd67aa9b46776ab</id>
+    <link type="text/html" rel="alternate" href="https://github.com/NixOS/nixpkgs/commit/0c3729a9d60c1442fff160b23cd67aa9b46776ab"/>
+    <title>
+        ocamlPackages.sexp: mark broken at versions 0.15 &amp; 0.14
+    </title>
+    <updated>2025-02-21T06:11:58Z</updated>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/u/2612464?s=30&amp;v=4"/>
+    <author>
+      <name>vbgl</name>
+      <uri>https://github.com/vbgl</uri>
+    </author>
+    <content type="html">
+      &lt;pre style=&#39;white-space:pre-wrap;width:81ex&#39;&gt;ocamlPackages.sexp: mark broken at versions 0.15 &amp;amp; 0.14&lt;/pre&gt;
+    </content>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Grit::Commit/5e281f0f6eba6fba658f2785973dd7c3ca9649fd</id>
+    <link type="text/html" rel="alternate" href="https://github.com/NixOS/nixpkgs/commit/5e281f0f6eba6fba658f2785973dd7c3ca9649fd"/>
+    <title>
+        ocamlPackages.shell: disable tests of version 0.14
+    </title>
+    <updated>2025-02-21T06:11:58Z</updated>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/u/2612464?s=30&amp;v=4"/>
+    <author>
+      <name>vbgl</name>
+      <uri>https://github.com/vbgl</uri>
+    </author>
+    <content type="html">
+      &lt;pre style=&#39;white-space:pre-wrap;width:81ex&#39;&gt;ocamlPackages.shell: disable tests of version 0.14&lt;/pre&gt;
+    </content>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Grit::Commit/35bd105dc889fd509dbb2645dde733bc537e0849</id>
+    <link type="text/html" rel="alternate" href="https://github.com/NixOS/nixpkgs/commit/35bd105dc889fd509dbb2645dde733bc537e0849"/>
+    <title>
+        ocamlPackages.async_ssl: mark broken at version 0.14
+    </title>
+    <updated>2025-02-21T06:11:58Z</updated>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/u/2612464?s=30&amp;v=4"/>
+    <author>
+      <name>vbgl</name>
+      <uri>https://github.com/vbgl</uri>
+    </author>
+    <content type="html">
+      &lt;pre style=&#39;white-space:pre-wrap;width:81ex&#39;&gt;ocamlPackages.async_ssl: mark broken at version 0.14&lt;/pre&gt;
+    </content>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Grit::Commit/22c572eb22247517ff2838e9b1ad06a7784cefdb</id>
+    <link type="text/html" rel="alternate" href="https://github.com/NixOS/nixpkgs/commit/22c572eb22247517ff2838e9b1ad06a7784cefdb"/>
+    <title>
+        ocamlPackages.asai: disable for OCaml &lt; 5.2
+    </title>
+    <updated>2025-02-21T06:11:58Z</updated>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/u/2612464?s=30&amp;v=4"/>
+    <author>
+      <name>vbgl</name>
+      <uri>https://github.com/vbgl</uri>
+    </author>
+    <content type="html">
+      &lt;pre style=&#39;white-space:pre-wrap;width:81ex&#39;&gt;ocamlPackages.asai: disable for OCaml &amp;lt; 5.2&lt;/pre&gt;
+    </content>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Grit::Commit/252122666524711f89e61c66a26ceb33b9027cd5</id>
+    <link type="text/html" rel="alternate" href="https://github.com/NixOS/nixpkgs/commit/252122666524711f89e61c66a26ceb33b9027cd5"/>
+    <title>
+        Merge master into staging-next
+    </title>
+    <updated>2025-02-21T06:04:53Z</updated>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/u/487568?s=30&amp;v=4"/>
+    <author>
+      <name>nixpkgs-ci</name>
+      <uri>https://github.com/nixpkgs-ci</uri>
+    </author>
+    <content type="html">
+      &lt;pre style=&#39;white-space:pre-wrap;width:81ex&#39;&gt;Merge master into staging-next&lt;/pre&gt;
+    </content>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Grit::Commit/a5b0229de77f0ac457e5855445dfcdae498c09f6</id>
+    <link type="text/html" rel="alternate" href="https://github.com/NixOS/nixpkgs/commit/a5b0229de77f0ac457e5855445dfcdae498c09f6"/>
+    <title>
+        violet: 0.5.2 -&gt; 0.5.3 (#383823)
+    </title>
+    <updated>2025-02-21T05:07:30Z</updated>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/in/409421?s=30&amp;v=4"/>
+    <author>
+      <name>nixpkgs-merge-bot</name>
+      <uri>https://github.com/nixpkgs-merge-bot</uri>
+    </author>
+    <content type="html">
+      &lt;pre style=&#39;white-space:pre-wrap;width:81ex&#39;&gt;violet: 0.5.2 -&amp;gt; 0.5.3 (#383823)
+
+Co-authored-by: oluceps &amp;lt;oluceps@users.noreply.github.com&amp;gt;&lt;/pre&gt;
+    </content>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Grit::Commit/e8dd8f96aaf4a763d3a45c1dffd5d01aecc05708</id>
+    <link type="text/html" rel="alternate" href="https://github.com/NixOS/nixpkgs/commit/e8dd8f96aaf4a763d3a45c1dffd5d01aecc05708"/>
+    <title>
+        ecapture: 0.9.3 -&gt; 0.9.4
+    </title>
+    <updated>2025-02-21T05:03:06Z</updated>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/u/37933096?s=30&amp;v=4"/>
+    <author>
+      <name>r-ryantm</name>
+      <uri>https://github.com/r-ryantm</uri>
+    </author>
+    <content type="html">
+      &lt;pre style=&#39;white-space:pre-wrap;width:81ex&#39;&gt;ecapture: 0.9.3 -&amp;gt; 0.9.4&lt;/pre&gt;
+    </content>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Grit::Commit/512ce1b7b789a80d17ebd7afae86e5618c64c9d8</id>
+    <link type="text/html" rel="alternate" href="https://github.com/NixOS/nixpkgs/commit/512ce1b7b789a80d17ebd7afae86e5618c64c9d8"/>
+    <title>
+        halloy: 2025.1 -&gt; 2025.2 (#383821)
+    </title>
+    <updated>2025-02-21T03:19:44Z</updated>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/in/409421?s=30&amp;v=4"/>
+    <author>
+      <name>nixpkgs-merge-bot</name>
+      <uri>https://github.com/nixpkgs-merge-bot</uri>
+    </author>
+    <content type="html">
+      &lt;pre style=&#39;white-space:pre-wrap;width:81ex&#39;&gt;halloy: 2025.1 -&amp;gt; 2025.2 (#383821)
+
+Co-authored-by: hexadecimalDinosaur &amp;lt;contact@ivyfanchiang.ca&amp;gt;&lt;/pre&gt;
+    </content>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Grit::Commit/4855fa93c6d39c2f92d9e999b1b2e8e6dc814473</id>
+    <link type="text/html" rel="alternate" href="https://github.com/NixOS/nixpkgs/commit/4855fa93c6d39c2f92d9e999b1b2e8e6dc814473"/>
+    <title>
+        python313Packages.pymicro-vad: 1.0.1 -&gt; 1.0.2 (#383818)
+    </title>
+    <updated>2025-02-21T02:56:14Z</updated>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/u/131599?s=30&amp;v=4"/>
+    <author>
+      <name>mweinelt</name>
+      <uri>https://github.com/mweinelt</uri>
+    </author>
+    <content type="html">
+      &lt;pre style=&#39;white-space:pre-wrap;width:81ex&#39;&gt;python313Packages.pymicro-vad: 1.0.1 -&amp;gt; 1.0.2 (#383818)&lt;/pre&gt;
+    </content>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Grit::Commit/36b0bc0553a5287cf37faa3448716142c493e310</id>
+    <link type="text/html" rel="alternate" href="https://github.com/NixOS/nixpkgs/commit/36b0bc0553a5287cf37faa3448716142c493e310"/>
+    <title>
+        gopeed: 1.6.8 -&gt; 1.6.10 and fix build (#381451)
+    </title>
+    <updated>2025-02-21T02:46:49Z</updated>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/u/42209822?s=30&amp;v=4"/>
+    <author>
+      <name>Aleksanaa</name>
+      <uri>https://github.com/Aleksanaa</uri>
+    </author>
+    <content type="html">
+      &lt;pre style=&#39;white-space:pre-wrap;width:81ex&#39;&gt;gopeed: 1.6.8 -&amp;gt; 1.6.10 and fix build (#381451)&lt;/pre&gt;
+    </content>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Grit::Commit/e7d9d982ffea3fec781a0c1dcadfacb7a8ae930e</id>
+    <link type="text/html" rel="alternate" href="https://github.com/NixOS/nixpkgs/commit/e7d9d982ffea3fec781a0c1dcadfacb7a8ae930e"/>
+    <title>
+        violet: 0.5.2 -&gt; 0.5.3
+    </title>
+    <updated>2025-02-21T02:24:56Z</updated>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/u/37933096?s=30&amp;v=4"/>
+    <author>
+      <name>r-ryantm</name>
+      <uri>https://github.com/r-ryantm</uri>
+    </author>
+    <content type="html">
+      &lt;pre style=&#39;white-space:pre-wrap;width:81ex&#39;&gt;violet: 0.5.2 -&amp;gt; 0.5.3&lt;/pre&gt;
+    </content>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Grit::Commit/dd34c8e8bce8a1a80c37d929208b7d8f6a6f438c</id>
+    <link type="text/html" rel="alternate" href="https://github.com/NixOS/nixpkgs/commit/dd34c8e8bce8a1a80c37d929208b7d8f6a6f438c"/>
+    <title>
+        halloy: 2025.1 -&gt; 2025.2
+    </title>
+    <updated>2025-02-21T02:11:50Z</updated>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/u/37933096?s=30&amp;v=4"/>
+    <author>
+      <name>r-ryantm</name>
+      <uri>https://github.com/r-ryantm</uri>
+    </author>
+    <content type="html">
+      &lt;pre style=&#39;white-space:pre-wrap;width:81ex&#39;&gt;halloy: 2025.1 -&amp;gt; 2025.2&lt;/pre&gt;
+    </content>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Grit::Commit/9221c9ced1b3164e8a47beb9f3d479ad8d81f6b1</id>
+    <link type="text/html" rel="alternate" href="https://github.com/NixOS/nixpkgs/commit/9221c9ced1b3164e8a47beb9f3d479ad8d81f6b1"/>
+    <title>
+        python313Packages.paypalhttp: fix http header case issue (#383810)
+    </title>
+    <updated>2025-02-21T01:58:21Z</updated>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/u/131599?s=30&amp;v=4"/>
+    <author>
+      <name>mweinelt</name>
+      <uri>https://github.com/mweinelt</uri>
+    </author>
+    <content type="html">
+      &lt;pre style=&#39;white-space:pre-wrap;width:81ex&#39;&gt;python313Packages.paypalhttp: fix http header case issue (#383810)&lt;/pre&gt;
+    </content>
+  </entry>
+</feed>
