@@ -47,7 +47,7 @@ Add the following to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-markitdown = "0.1.7"
+markitdown = "0.1.8"
 ```
 
 #### Initialize MarkItDown

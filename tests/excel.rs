@@ -14,7 +14,7 @@ fn test_excel_conversion() {
     };
 
     let result = converter.convert("tests/test_files/test.xlsx", Some(options));
-    write_to_file(&result.as_ref().unwrap().text_content);
+    // write_to_file(&result.as_ref().unwrap().text_content);
     assert!(result.is_some());
 }
 

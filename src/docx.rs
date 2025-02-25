@@ -1,6 +1,6 @@
 use crate::model::{ConversionOptions, DocumentConverter, DocumentConverterResult};
-use docx::{
-    document::{BodyContent, TableCellContent},
+use docx_rust::{
+    document::{BodyContent, TableCellContent, TableRowContent},
     DocxFile,
 };
 use std::fs;
@@ -41,12 +41,17 @@ impl DocumentConverter for DocxConverter {
                 BodyContent::Table(table) => {
                     markdown.push_str("|");
                     for cell in table.rows[0].cells.iter() {
-                        match &cell.content[0] {
-                            TableCellContent::Paragraph(paragraph) => {
-                                for text in paragraph.iter_text() {
-                                    markdown.push_str(&format!(" {} |", text));
-                                }
+                        match &cell {
+                            TableRowContent::TableCell(tc) => {
+                                tc.content.iter().for_each(|content| match content {
+                                    TableCellContent::Paragraph(paragraph) => {
+                                        for text in paragraph.iter_text() {
+                                            markdown.push_str(&format!(" {} |", text));
+                                        }
+                                    }
+                                })
                             }
+                            _ => {}
                         }
                     }
                     markdown.push_str("\n|");
@@ -59,19 +64,23 @@ impl DocumentConverter for DocxConverter {
                     for row in table.rows.iter().skip(1) {
                         markdown.push_str("|");
                         for cell in row.cells.iter() {
-                            for content in cell.content.iter() {
-                                match content {
-                                    TableCellContent::Paragraph(paragraph) => {
-                                        for text in paragraph.iter_text() {
-                                            markdown.push_str(&format!(" {} |", text));
+                            match &cell {
+                                TableRowContent::TableCell(tc) => {
+                                    tc.content.iter().for_each(|content| match content {
+                                        TableCellContent::Paragraph(paragraph) => {
+                                            for text in paragraph.iter_text() {
+                                                markdown.push_str(&format!(" {} |", text));
+                                            }
                                         }
-                                    }
+                                    })
                                 }
+                                _ => {}
                             }
                         }
                         markdown.push_str("\n");
                     }
                 }
+                _ => {}
             }
         }
 

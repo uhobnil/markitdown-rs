@@ -14,5 +14,12 @@ fn test_docx_conversion() {
     };
 
     let result = converter.convert("tests/test_files/test.docx", Some(options));
+    write_to_file(&result.as_ref().unwrap().text_content);
     assert!(result.is_some());
+}
+
+fn write_to_file(content: &str) {
+    use std::io::Write;
+    let mut file = std::fs::File::create("test.md").unwrap();
+    file.write_all(content.as_bytes()).unwrap();
 }
