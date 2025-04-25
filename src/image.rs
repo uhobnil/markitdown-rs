@@ -67,4 +67,56 @@ impl DocumentConverter for ImageConverter {
             text_content: markdown,
         })
     }
+
+    fn convert_bytes(
+        &self,
+        bytes: &[u8],
+        args: Option<ConversionOptions>,
+    ) -> Option<DocumentConverterResult> {
+        if let Some(opts) = &args {
+            if let Some(ext) = &opts.file_extension {
+                if ext != ".jpg" {
+                    return None;
+                }
+            }
+        }
+
+        let exif = Reader::new().read_raw(bytes.to_vec()).unwrap();
+
+        let mut markdown = String::new();
+
+        for field in exif.fields() {
+            markdown.push_str(&format!(
+                "{}: {}\n",
+                field.tag,
+                field.display_value().with_unit(&exif)
+            ));
+        }
+
+        if let Some(opts) = &args {
+            if let Some(llm_client) = &opts.llm_client {
+                if let Some(llm_model) = &opts.llm_model {
+                    let rt = tokio::runtime::Builder::new_current_thread()
+                        .enable_all()
+                        .build()
+                        .unwrap();
+
+                    let llm_description = rt.block_on(async {
+                        llm::get_llm_description("", llm_client, llm_model)
+                            .await
+                            .unwrap()
+                    });
+                    markdown.push_str("\n# Description:\n");
+                    markdown.push_str(&llm_description);
+                }
+            }
+        }
+
+        println!("markdown:{}", markdown);
+
+        Some(DocumentConverterResult {
+            title: None,
+            text_content: markdown,
+        })
+    }
 }
