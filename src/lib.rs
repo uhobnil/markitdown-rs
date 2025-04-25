@@ -99,6 +99,14 @@ impl MarkItDown {
         None
     }
 
+    pub fn detect_bytes(&self, bytes: &[u8]) -> Option<String> {
+        if let Some(kind) = infer::get(bytes) {
+            return Some(format!(".{}", kind.extension()));
+        }
+
+        None
+    }
+
     pub fn convert(
         &self,
         source: &str,
@@ -165,6 +173,75 @@ impl MarkItDown {
 
         for converter in &self.converters {
             if let Some(result) = converter.convert(source, args.clone()) {
+                return Some(result);
+            }
+        }
+        None
+    }
+
+    pub fn convert_bytes(
+        &self,
+        bytes: &[u8],
+        mut args: Option<ConversionOptions>,
+    ) -> Option<DocumentConverterResult> {
+        if let Some(ref mut options) = args {
+            if options.file_extension.is_none() {
+                options.file_extension = self.detect_bytes(bytes);
+            }
+        } else {
+            args = Some(ConversionOptions {
+                file_extension: self.detect_bytes(bytes),
+                url: None,
+                llm_client: None,
+                llm_model: None,
+            });
+        }
+
+        if let Some(opts) = &args {
+            if let Some(ext) = &opts.file_extension {
+                if ext == ".zip" {
+                    let cursor = Cursor::new(bytes);
+                    let mut archive = ZipArchive::new(cursor).expect("Failed to read ZIP archive");
+
+                    let mut markdown = String::from("");
+
+                    for i in 0..archive.len() {
+                        let mut file = archive
+                            .by_index(i)
+                            .expect("Failed to access file in ZIP archive");
+                        let file_name = file.name().to_string();
+                        let dir = tempdir().unwrap();
+                        let file_path = dir.path().join(&file_name);
+                        let mut temp_file = fs::File::create(&file_path).unwrap();
+                        io::copy(&mut file, &mut temp_file).unwrap();
+                        for converter in &self.converters {
+                            let file_args = Some(ConversionOptions {
+                                file_extension: self.detect_file_type(file_path.to_str().unwrap()),
+                                url: None,
+                                llm_client: None,
+                                llm_model: None,
+                            });
+                            if let Some(result) =
+                                converter.convert(&file_path.to_str().unwrap(), file_args.clone())
+                            {
+                                markdown
+                                    .push_str(format!("\n## File: {}\n\n", &file_name).as_str());
+                                markdown.push_str(format!("{}\n", result.text_content).as_str());
+                            }
+                        }
+
+                        std::fs::remove_file(&file_path).expect("Failed to delete the file");
+                    }
+                    return Some(DocumentConverterResult {
+                        title: None,
+                        text_content: markdown,
+                    });
+                }
+            }
+        }
+
+        for converter in &self.converters {
+            if let Some(result) = converter.convert_bytes(bytes, args.clone()) {
                 return Some(result);
             }
         }
