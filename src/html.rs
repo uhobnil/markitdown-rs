@@ -29,6 +29,31 @@ impl DocumentConverter for HtmlConverter {
             Err(_) => None,
         }
     }
+
+    fn convert_bytes(
+        &self,
+        bytes: &[u8],
+        kwargs: Option<ConversionOptions>,
+    ) -> Option<DocumentConverterResult> {
+        if let Some(opts) = &kwargs {
+            if let Some(ext) = &opts.file_extension {
+                if ext != ".html" && ext != ".htm" {
+                    return None;
+                }
+            }
+        }
+
+        match String::from_utf8(bytes.to_vec()) {
+            Ok(content) => {
+                let markdown = parse_html(&content);
+                Some(DocumentConverterResult {
+                    title: extract_title(&content),
+                    text_content: markdown,
+                })
+            }
+            Err(_) => None,
+        }
+    }
 }
 
 fn extract_title(html: &str) -> Option<String> {

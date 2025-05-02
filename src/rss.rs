@@ -1,8 +1,8 @@
 use crate::model::{ConversionOptions, DocumentConverter, DocumentConverterResult};
+use feed_rs::parser;
+use html2md::parse_html;
 use std::fs::File;
 use std::io::BufReader;
-use html2md::parse_html;
-use feed_rs::parser;
 
 pub struct RssConverter;
 
@@ -22,12 +22,41 @@ impl DocumentConverter for RssConverter {
 
         let file = File::open(local_path).unwrap();
         let feed = parser::parse(BufReader::new(file)).unwrap();
-        
+
         let mut markdown = String::new();
 
         if feed.feed_type == feed_rs::model::FeedType::Atom {
             markdown = parse_atom_type(feed);
-        }else if feed.feed_type == feed_rs::model::FeedType::RSS2 {
+        } else if feed.feed_type == feed_rs::model::FeedType::RSS2 {
+            markdown = parse_rss_type(feed);
+        }
+
+        Some(DocumentConverterResult {
+            title: None,
+            text_content: markdown,
+        })
+    }
+
+    fn convert_bytes(
+        &self,
+        bytes: &[u8],
+        args: Option<ConversionOptions>,
+    ) -> Option<DocumentConverterResult> {
+        if let Some(opts) = &args {
+            if let Some(ext) = &opts.file_extension {
+                if ![".rss", ".xml", ".atom"].contains(&ext.as_str()) {
+                    return None;
+                }
+            }
+        }
+
+        let feed = parser::parse(BufReader::new(bytes)).unwrap();
+
+        let mut markdown = String::new();
+
+        if feed.feed_type == feed_rs::model::FeedType::Atom {
+            markdown = parse_atom_type(feed);
+        } else if feed.feed_type == feed_rs::model::FeedType::RSS2 {
             markdown = parse_rss_type(feed);
         }
 
@@ -98,7 +127,7 @@ fn parse_rss_type(feed: feed_rs::model::Feed) -> String {
 //     if !channel.title().is_empty()  {
 //         markdown.push_str(&format!("# {}\n", channel.title()));
 //     }
-    
+
 //     if channel.pub_date().is_some() {
 //         markdown.push_str(channel.pub_date().unwrap());
 //         markdown.push_str("\n");
@@ -130,3 +159,4 @@ fn parse_rss_type(feed: feed_rs::model::Feed) -> String {
 
 //     markdown
 // }
+
