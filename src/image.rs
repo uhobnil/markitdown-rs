@@ -3,7 +3,7 @@ use crate::model::{ConversionOptions, DocumentConverter, DocumentConverterResult
 use exif::Reader;
 use std::fs;
 use std::fs::File;
-use std::io::BufReader;
+use std::io::{BufReader, Cursor};
 use tokio;
 
 pub struct ImageConverter;
@@ -81,7 +81,9 @@ impl DocumentConverter for ImageConverter {
             }
         }
 
-        let exif = Reader::new().read_raw(bytes.to_vec()).unwrap();
+        let exif = Reader::new()
+            .read_from_container(&mut Cursor::new(bytes))
+            .unwrap();
 
         let mut markdown = String::new();
 
