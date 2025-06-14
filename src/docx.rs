@@ -3,11 +3,8 @@ use docx_rust::{
     document::{BodyContent, TableCellContent, TableRowContent},
     DocxFile,
 };
-use std::io::{prelude::*, Cursor};
-use std::{
-    fs,
-    io::{BufRead, BufReader, Seek},
-};
+use std::io::Cursor;
+use std::fs;
 
 pub struct DocxConverter;
 

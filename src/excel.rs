@@ -1,5 +1,5 @@
 use calamine::{open_workbook, Reader, Xlsx};
-use std::{fs::File, io::Cursor, path::Path};
+use std::{io::Cursor, path::Path};
 
 use crate::model::{ConversionOptions, DocumentConverter, DocumentConverterResult};
 
