@@ -57,7 +57,7 @@ impl DocumentConverter for PdfConverter {
             }
         }
 
-        let text_content = pdf_extract::extract_text_from_mem(&bytes).unwrap();
+        let text_content = pdf_extract::extract_text_from_mem(bytes).unwrap();
         Some(DocumentConverterResult {
             title: None,
             text_content,
