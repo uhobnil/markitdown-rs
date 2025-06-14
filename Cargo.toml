@@ -1,6 +1,6 @@
 [package]
 name = "markitdown"
-version = "0.1.9"
+version = "0.1.10"
 edition = "2021"
 description = "A Rust library designed to facilitate the conversion of various document formats into markdown text."
 repository = "https://github.com/uhobnil/markitdown-rs"
@@ -19,7 +19,7 @@ pdf-extract = "0.8.2"
 regex = "1.11.1"
 serde = { version = "1", features = ["derive"] }
 quick-xml = "0.37.2"
-zip = { version = "=2.5", default-features = false, features = [
+zip = { version = "3.0", default-features = false, features = [
   "deflate",
   "aes-crypto",
   "time",
