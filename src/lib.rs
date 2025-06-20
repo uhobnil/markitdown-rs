@@ -21,6 +21,7 @@ use pdf::PdfConverter;
 use pptx::PptxConverter;
 use rss::RssConverter;
 use std::io::Cursor;
+use std::io::Read;
 use std::{collections::HashMap, path::Path};
 use std::{fs, io};
 use tempfile::tempdir;
@@ -210,27 +211,27 @@ impl MarkItDown {
                             .by_index(i)
                             .expect("Failed to access file in ZIP archive");
                         let file_name = file.name().to_string();
-                        let dir = tempdir().unwrap();
-                        let file_path = dir.path().join(&file_name);
-                        let mut temp_file = fs::File::create(&file_path).unwrap();
-                        io::copy(&mut file, &mut temp_file).unwrap();
+
+                        // Read file contents into memory
+                        let mut file_contents = Vec::new();
+                        file.read_to_end(&mut file_contents)
+                            .expect("Failed to read file from ZIP");
+
                         for converter in &self.converters {
                             let file_args = Some(ConversionOptions {
-                                file_extension: self.detect_file_type(file_path.to_str().unwrap()),
+                                file_extension: self.detect_file_type(&file_name),
                                 url: None,
                                 llm_client: None,
                                 llm_model: None,
                             });
                             if let Some(result) =
-                                converter.convert(&file_path.to_str().unwrap(), file_args.clone())
+                                converter.convert_bytes(&file_contents, file_args.clone())
                             {
                                 markdown
                                     .push_str(format!("\n## File: {}\n\n", &file_name).as_str());
                                 markdown.push_str(format!("{}\n", result.text_content).as_str());
                             }
                         }
-
-                        std::fs::remove_file(&file_path).expect("Failed to delete the file");
                     }
                     return Some(DocumentConverterResult {
                         title: None,
