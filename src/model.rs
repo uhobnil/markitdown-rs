@@ -20,4 +20,10 @@ pub trait DocumentConverter {
         local_path: &str,
         args: Option<ConversionOptions>,
     ) -> Option<DocumentConverterResult>;
+
+    fn convert_bytes(
+        &self,
+        bytes: &[u8],
+        args: Option<ConversionOptions>,
+    ) -> Option<DocumentConverterResult>;
 }

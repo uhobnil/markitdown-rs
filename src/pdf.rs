@@ -44,4 +44,23 @@ impl DocumentConverter for PdfConverter {
         //     Err(_) => None,
         // }
     }
+    fn convert_bytes(
+        &self,
+        bytes: &[u8],
+        args: Option<ConversionOptions>,
+    ) -> Option<DocumentConverterResult> {
+        if let Some(opts) = &args {
+            if let Some(ext) = &opts.file_extension {
+                if ext != ".pdf" {
+                    return None;
+                }
+            }
+        }
+
+        let text_content = pdf_extract::extract_text_from_mem(bytes).unwrap();
+        Some(DocumentConverterResult {
+            title: None,
+            text_content,
+        })
+    }
 }
