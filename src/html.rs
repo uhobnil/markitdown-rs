@@ -1,5 +1,6 @@
 use html2md::parse_html;
 
+use crate::error::{MarkitdownError, Result};
 use crate::model::{ConversionOptions, DocumentConverter, DocumentConverterResult};
 
 pub struct HtmlConverter;
@@ -9,57 +10,54 @@ impl DocumentConverter for HtmlConverter {
         &self,
         local_path: &str,
         kwargs: Option<ConversionOptions>,
-    ) -> Option<DocumentConverterResult> {
+    ) -> Result<DocumentConverterResult> {
         if let Some(opts) = &kwargs {
             if let Some(ext) = &opts.file_extension {
                 if ext != ".html" && ext != ".htm" {
-                    return None;
+                    return Err(MarkitdownError::InvalidFile(
+                        format!("Expected .html or .htm file, got {}", ext)
+                    ));
                 }
             }
         }
 
-        match std::fs::read_to_string(local_path) {
-            Ok(content) => {
-                let markdown = parse_html(&content);
-                Some(DocumentConverterResult {
-                    title: extract_title(&content),
-                    text_content: markdown,
-                })
-            }
-            Err(_) => None,
-        }
+        let content = std::fs::read_to_string(local_path)?;
+        let markdown = parse_html(&content);
+        Ok(DocumentConverterResult {
+            title: extract_title(&content),
+            text_content: markdown,
+        })
     }
 
     fn convert_bytes(
         &self,
         bytes: &[u8],
         kwargs: Option<ConversionOptions>,
-    ) -> Option<DocumentConverterResult> {
+    ) -> Result<DocumentConverterResult> {
         if let Some(opts) = &kwargs {
             if let Some(ext) = &opts.file_extension {
                 if ext != ".html" && ext != ".htm" {
-                    return None;
+                    return Err(MarkitdownError::InvalidFile(
+                        format!("Expected .html or .htm file, got {}", ext)
+                    ));
                 }
             }
         }
 
-        match String::from_utf8(bytes.to_vec()) {
-            Ok(content) => {
-                let markdown = parse_html(&content);
-                Some(DocumentConverterResult {
-                    title: extract_title(&content),
-                    text_content: markdown,
-                })
-            }
-            Err(_) => None,
-        }
+        let content = String::from_utf8(bytes.to_vec())
+            .map_err(|e| MarkitdownError::ParseError(format!("Invalid UTF-8 encoding: {}", e)))?;
+        let markdown = parse_html(&content);
+        Ok(DocumentConverterResult {
+            title: extract_title(&content),
+            text_content: markdown,
+        })
     }
 }
 
 fn extract_title(html: &str) -> Option<String> {
     use regex::Regex;
 
-    let re = Regex::new(r"(?i)<title(?:\s[^>]*)?>(.*?)</title>").unwrap();
+    let re = Regex::new(r"(?i)<title(?:\s[^>]*)?>(.*?)</title>").ok()?;
     if let Some(captures) = re.captures(html) {
         return Some(captures[1].trim().to_string());
     }

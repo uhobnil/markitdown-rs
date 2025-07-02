@@ -28,7 +28,10 @@ pub async fn get_llm_description(
 }
 
 async fn get_answer(agent: Agent<impl CompletionModel>, local_path: &str) -> Option<String> {
-    let image = std::fs::read(local_path).unwrap();
+    let image = match std::fs::read(local_path) {
+        Ok(i) => i,
+        Err(_) => return None,
+    };
     let image_base64 = BASE64_STANDARD.encode(image);
 
     let mut content_items = OneOrMany::one(UserContent::image(
