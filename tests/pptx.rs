@@ -1,11 +1,7 @@
-use markitdown::{
-    model::{ConversionOptions, DocumentConverter},
-    pptx::PptxConverter,
-};
+use markitdown::{model::ConversionOptions, MarkItDown};
 
 #[test]
 fn test_pptx_conversion() {
-    let converter = PptxConverter;
     let options = ConversionOptions {
         file_extension: Some(".pptx".to_string()),
         url: None,
@@ -13,13 +9,15 @@ fn test_pptx_conversion() {
         llm_model: None,
     };
 
-    let result = converter.convert("tests/test_files/test.pptx", Some(options));
-    assert!(result.is_some());
+    let markitdown = MarkItDown::new();
+
+    let result = markitdown.convert("tests/test_files/test.pptx", Some(options));
+    assert!(result.is_ok());
+    assert!(result.unwrap().is_some());
 }
 
 #[test]
 fn test_pptx_bytes_conversion() {
-    let converter = PptxConverter;
     let options = ConversionOptions {
         file_extension: Some(".pptx".to_string()),
         url: None,
@@ -27,6 +25,9 @@ fn test_pptx_bytes_conversion() {
         llm_model: None,
     };
 
-    let result = converter.convert_bytes(include_bytes!("./test_files/test.pptx"), Some(options));
-    assert!(result.is_some());
+    let markitdown = MarkItDown::new();
+
+    let result = markitdown.convert_bytes(include_bytes!("./test_files/test.pptx"), Some(options));
+    assert!(result.is_ok());
+    assert!(result.unwrap().is_some());
 }
