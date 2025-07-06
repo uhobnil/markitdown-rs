@@ -16,7 +16,7 @@ struct Cli {
     format: Option<String>,
 }
 
-fn main() -> std::result::Result<(), Box<dyn std::error::Error>> {
+fn main() -> Result<(), Box<dyn std::error::Error>> {
     let cli = Cli::parse();
 
     let output = match cli.output {

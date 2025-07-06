@@ -1,6 +1,6 @@
 use pdf_extract;
 
-use crate::error::{MarkitdownError, Result};
+use crate::error::MarkitdownError;
 use crate::model::{ConversionOptions, DocumentConverter, DocumentConverterResult};
 
 pub struct PdfConverter;
@@ -10,7 +10,7 @@ impl DocumentConverter for PdfConverter {
         &self,
         local_path: &str,
         args: Option<ConversionOptions>,
-    ) -> Result<DocumentConverterResult> {
+    ) -> Result<DocumentConverterResult, MarkitdownError> {
         if let Some(opts) = &args {
             if let Some(ext) = &opts.file_extension {
                 if ext != ".pdf" {
@@ -52,7 +52,7 @@ impl DocumentConverter for PdfConverter {
         &self,
         bytes: &[u8],
         args: Option<ConversionOptions>,
-    ) -> Result<DocumentConverterResult> {
+    ) -> Result<DocumentConverterResult, MarkitdownError> {
         if let Some(opts) = &args {
             if let Some(ext) = &opts.file_extension {
                 if ext != ".pdf" {

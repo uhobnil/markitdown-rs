@@ -1,4 +1,4 @@
-use crate::error::{MarkitdownError, Result};
+use crate::error::MarkitdownError;
 use crate::model::{ConversionOptions, DocumentConverter, DocumentConverterResult};
 use quick_xml::{events::Event, reader::Reader};
 use std::fs;
@@ -12,7 +12,7 @@ impl DocumentConverter for PptxConverter {
         &self,
         local_path: &str,
         args: Option<ConversionOptions>,
-    ) -> Result<DocumentConverterResult> {
+    ) -> Result<DocumentConverterResult, MarkitdownError> {
         if let Some(opts) = &args {
             if let Some(ext) = &opts.file_extension {
                 if ext != ".pptx" {
@@ -176,7 +176,7 @@ impl DocumentConverter for PptxConverter {
         &self,
         bytes: &[u8],
         args: Option<ConversionOptions>,
-    ) -> Result<DocumentConverterResult> {
+    ) -> Result<DocumentConverterResult, MarkitdownError> {
         if let Some(opts) = &args {
             if let Some(ext) = &opts.file_extension {
                 if ext != ".pptx" {

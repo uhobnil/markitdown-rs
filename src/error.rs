@@ -63,4 +63,3 @@ impl From<zip::result::ZipError> for MarkitdownError {
     }
 }
 
-pub type Result<T> = std::result::Result<T, MarkitdownError>;

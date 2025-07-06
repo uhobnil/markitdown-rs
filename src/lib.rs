@@ -12,7 +12,7 @@ pub mod rss;
 
 use csv::CsvConverter;
 use docx::DocxConverter;
-use error::{MarkitdownError, Result};
+use error::MarkitdownError;
 use excel::ExcelConverter;
 use html::HtmlConverter;
 use image::ImageConverter;
@@ -114,7 +114,7 @@ impl MarkItDown {
         &self,
         source: &str,
         mut args: Option<ConversionOptions>,
-    ) -> Result<Option<DocumentConverterResult>> {
+    ) -> Result<Option<DocumentConverterResult>, MarkitdownError> {
         if let Some(ref mut options) = args {
             if options.file_extension.is_none() {
                 options.file_extension = self.detect_file_type(source);
@@ -176,9 +176,11 @@ impl MarkItDown {
                                 file_args.clone(),
                             ) {
                                 Ok(result) => {
+                                    markdown.push_str(
+                                        format!("\n## File: {}\n\n", &file_name).as_str(),
+                                    );
                                     markdown
-                                        .push_str(format!("\n## File: {}\n\n", &file_name).as_str());
-                                    markdown.push_str(format!("{}\n", result.text_content).as_str());
+                                        .push_str(format!("{}\n", result.text_content).as_str());
                                 }
                                 Err(_) => {} // Skip if converter can't handle this file
                             }
@@ -207,7 +209,7 @@ impl MarkItDown {
         &self,
         bytes: &[u8],
         mut args: Option<ConversionOptions>,
-    ) -> Result<Option<DocumentConverterResult>> {
+    ) -> Result<Option<DocumentConverterResult>, MarkitdownError> {
         if let Some(ref mut options) = args {
             if options.file_extension.is_none() {
                 options.file_extension = self.detect_bytes(bytes);
@@ -246,9 +248,11 @@ impl MarkItDown {
                             });
                             match converter.convert_bytes(&file_contents, file_args.clone()) {
                                 Ok(result) => {
+                                    markdown.push_str(
+                                        format!("\n## File: {}\n\n", &file_name).as_str(),
+                                    );
                                     markdown
-                                        .push_str(format!("\n## File: {}\n\n", &file_name).as_str());
-                                    markdown.push_str(format!("{}\n", result.text_content).as_str());
+                                        .push_str(format!("{}\n", result.text_content).as_str());
                                 }
                                 Err(_) => {} // Skip if converter can't handle this file
                             }

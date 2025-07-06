@@ -1,4 +1,4 @@
-use crate::error::{MarkitdownError, Result};
+use crate::error::MarkitdownError;
 use crate::model::{ConversionOptions, DocumentConverter, DocumentConverterResult};
 use feed_rs::parser;
 use html2md::parse_html;
@@ -12,7 +12,7 @@ impl DocumentConverter for RssConverter {
         &self,
         local_path: &str,
         args: Option<ConversionOptions>,
-    ) -> Result<DocumentConverterResult> {
+    ) -> Result<DocumentConverterResult, MarkitdownError> {
         if let Some(opts) = &args {
             if let Some(ext) = &opts.file_extension {
                 if ![".rss", ".xml", ".atom"].contains(&ext.as_str()) {
@@ -45,7 +45,7 @@ impl DocumentConverter for RssConverter {
         &self,
         bytes: &[u8],
         args: Option<ConversionOptions>,
-    ) -> Result<DocumentConverterResult> {
+    ) -> Result<DocumentConverterResult, MarkitdownError> {
         if let Some(opts) = &args {
             if let Some(ext) = &opts.file_extension {
                 if ![".rss", ".xml", ".atom"].contains(&ext.as_str()) {

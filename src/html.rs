@@ -1,6 +1,6 @@
 use html2md::parse_html;
 
-use crate::error::{MarkitdownError, Result};
+use crate::error::MarkitdownError;
 use crate::model::{ConversionOptions, DocumentConverter, DocumentConverterResult};
 
 pub struct HtmlConverter;
@@ -10,7 +10,7 @@ impl DocumentConverter for HtmlConverter {
         &self,
         local_path: &str,
         kwargs: Option<ConversionOptions>,
-    ) -> Result<DocumentConverterResult> {
+    ) -> Result<DocumentConverterResult, MarkitdownError> {
         if let Some(opts) = &kwargs {
             if let Some(ext) = &opts.file_extension {
                 if ext != ".html" && ext != ".htm" {
@@ -33,7 +33,7 @@ impl DocumentConverter for HtmlConverter {
         &self,
         bytes: &[u8],
         kwargs: Option<ConversionOptions>,
-    ) -> Result<DocumentConverterResult> {
+    ) -> Result<DocumentConverterResult, MarkitdownError> {
         if let Some(opts) = &kwargs {
             if let Some(ext) = &opts.file_extension {
                 if ext != ".html" && ext != ".htm" {
