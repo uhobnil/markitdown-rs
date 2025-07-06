@@ -61,8 +61,14 @@ let mut md = MarkItDown::new();
 #### Convert a File
 
 ```rust
-use markitdown::{ConversionOptions, DocumentConverterResult};
+use markitdown::{ConversionOptions, DocumentConverterResult, MarkItDown};
 
+let md = MarkItDown::new();
+
+// Basic conversion - file type is auto-detected
+let result = md.convert("path/to/file.xlsx", None)?;
+
+// Or explicitly specify options
 let options = ConversionOptions {
     file_extension: Some(".xlsx".to_string()),
     url: None,
@@ -70,10 +76,9 @@ let options = ConversionOptions {
     llm_model: None,
 };
 
-let result: Option<DocumentConverterResult> = md.convert("path/to/file.xlsx", Some(options));
+let result = md.convert("path/to/file.xlsx", Some(options))?;
 
-// To use Large Language Models for image descriptions, provide llm_client and llm_model, like:
-
+// To use Large Language Models for image descriptions
 let options = ConversionOptions {
     file_extension: Some(".jpg".to_string()),
     url: None,
@@ -81,7 +86,7 @@ let options = ConversionOptions {
     llm_model: Some("gemini-2.0-flash".to_string()),
 };
 
-let result: Option<DocumentConverterResult> = md.convert("path/to/file.jpg", Some(options));
+let result = md.convert("path/to/file.jpg", Some(options))?;
 
 if let Some(conversion_result) = result {
     println!("Converted Text: {}", conversion_result.text_content);
@@ -95,12 +100,29 @@ if let Some(conversion_result) = result {
 You can extend MarkItDown by implementing the `DocumentConverter` trait for your custom converters and registering them:
 
 ```rust
-use markitdown::{DocumentConverter, MarkItDown};
+use markitdown::{DocumentConverter, DocumentConverterResult, ConversionOptions, MarkItDown};
+use markitdown::error::Result;
 
 struct MyCustomConverter;
 
 impl DocumentConverter for MyCustomConverter {
-    // Implement the required methods here
+    fn convert(
+        &self,
+        local_path: &str,
+        args: Option<ConversionOptions>,
+    ) -> Result<DocumentConverterResult> {
+        // Implement file conversion logic
+        todo!()
+    }
+
+    fn convert_bytes(
+        &self,
+        bytes: &[u8],
+        args: Option<ConversionOptions>,
+    ) -> Result<DocumentConverterResult> {
+        // Implement bytes conversion logic
+        todo!()
+    }
 }
 
 let mut md = MarkItDown::new();
