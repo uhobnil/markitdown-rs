@@ -95,6 +95,32 @@ if let Some(conversion_result) = result {
 }
 ```
 
+#### Convert from Bytes
+
+```rust
+use markitdown::{ConversionOptions, MarkItDown};
+
+let md = MarkItDown::new();
+let file_bytes = std::fs::read("path/to/file.pdf")?;
+
+// Auto-detect file type from bytes
+let result = md.convert_bytes(&file_bytes, None)?;
+
+// Or specify options explicitly
+let options = ConversionOptions {
+    file_extension: Some(".pdf".to_string()),
+    url: None,
+    llm_client: None,
+    llm_model: None,
+};
+
+let result = md.convert_bytes(&file_bytes, Some(options))?;
+
+if let Some(conversion_result) = result {
+    println!("Converted Text: {}", conversion_result.text_content);
+}
+```
+
 #### Register a Custom Converter
 
 You can extend MarkItDown by implementing the `DocumentConverter` trait for your custom converters and registering them:
