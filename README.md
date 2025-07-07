@@ -63,8 +63,6 @@ let mut md = MarkItDown::new();
 ```rust
 use markitdown::{ConversionOptions, DocumentConverterResult, MarkItDown};
 
-let md = MarkItDown::new();
-
 // Basic conversion - file type is auto-detected
 let result = md.convert("path/to/file.xlsx", None)?;
 
@@ -100,7 +98,6 @@ if let Some(conversion_result) = result {
 ```rust
 use markitdown::{ConversionOptions, MarkItDown};
 
-let md = MarkItDown::new();
 let file_bytes = std::fs::read("path/to/file.pdf")?;
 
 // Auto-detect file type from bytes
@@ -127,7 +124,7 @@ You can extend MarkItDown by implementing the `DocumentConverter` trait for your
 
 ```rust
 use markitdown::{DocumentConverter, DocumentConverterResult, ConversionOptions, MarkItDown};
-use markitdown::error::Result;
+use markitdown::error::MarkitdownError;
 
 struct MyCustomConverter;
 
@@ -136,7 +133,7 @@ impl DocumentConverter for MyCustomConverter {
         &self,
         local_path: &str,
         args: Option<ConversionOptions>,
-    ) -> Result<DocumentConverterResult> {
+    ) -> Result<DocumentConverterResult, MarkitdownError> {
         // Implement file conversion logic
         todo!()
     }
@@ -145,7 +142,7 @@ impl DocumentConverter for MyCustomConverter {
         &self,
         bytes: &[u8],
         args: Option<ConversionOptions>,
-    ) -> Result<DocumentConverterResult> {
+    ) -> Result<DocumentConverterResult, MarkitdownError> {
         // Implement bytes conversion logic
         todo!()
     }
