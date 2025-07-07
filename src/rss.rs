@@ -1,3 +1,4 @@
+use crate::error::MarkitdownError;
 use crate::model::{ConversionOptions, DocumentConverter, DocumentConverterResult};
 use feed_rs::parser;
 use html2md::parse_html;
@@ -11,17 +12,20 @@ impl DocumentConverter for RssConverter {
         &self,
         local_path: &str,
         args: Option<ConversionOptions>,
-    ) -> Option<DocumentConverterResult> {
+    ) -> Result<DocumentConverterResult, MarkitdownError> {
         if let Some(opts) = &args {
             if let Some(ext) = &opts.file_extension {
                 if ![".rss", ".xml", ".atom"].contains(&ext.as_str()) {
-                    return None;
+                    return Err(MarkitdownError::InvalidFile(
+                        format!("Expected .rss, .xml, or .atom file, got {}", ext)
+                    ));
                 }
             }
         }
 
-        let file = File::open(local_path).unwrap();
-        let feed = parser::parse(BufReader::new(file)).unwrap();
+        let file = File::open(local_path)?;
+        let feed = parser::parse(BufReader::new(file))
+            .map_err(|e| MarkitdownError::ParseError(format!("Failed to parse feed: {}", e)))?;
 
         let mut markdown = String::new();
 
@@ -31,7 +35,7 @@ impl DocumentConverter for RssConverter {
             markdown = parse_rss_type(feed);
         }
 
-        Some(DocumentConverterResult {
+        Ok(DocumentConverterResult {
             title: None,
             text_content: markdown,
         })
@@ -41,16 +45,19 @@ impl DocumentConverter for RssConverter {
         &self,
         bytes: &[u8],
         args: Option<ConversionOptions>,
-    ) -> Option<DocumentConverterResult> {
+    ) -> Result<DocumentConverterResult, MarkitdownError> {
         if let Some(opts) = &args {
             if let Some(ext) = &opts.file_extension {
                 if ![".rss", ".xml", ".atom"].contains(&ext.as_str()) {
-                    return None;
+                    return Err(MarkitdownError::InvalidFile(
+                        format!("Expected .rss, .xml, or .atom file, got {}", ext)
+                    ));
                 }
             }
         }
 
-        let feed = parser::parse(BufReader::new(bytes)).unwrap();
+        let feed = parser::parse(BufReader::new(bytes))
+            .map_err(|e| MarkitdownError::ParseError(format!("Failed to parse feed: {}", e)))?;
 
         let mut markdown = String::new();
 
@@ -60,7 +67,7 @@ impl DocumentConverter for RssConverter {
             markdown = parse_rss_type(feed);
         }
 
-        Some(DocumentConverterResult {
+        Ok(DocumentConverterResult {
             title: None,
             text_content: markdown,
         })
@@ -69,22 +76,24 @@ impl DocumentConverter for RssConverter {
 
 fn parse_atom_type(feed: feed_rs::model::Feed) -> String {
     let mut markdown = String::new();
-    if feed.title.is_some() {
-        markdown.push_str(&format!("# {}\n", feed.title.unwrap().content));
+    if let Some(title) = &feed.title {
+        markdown.push_str(&format!("# {}\n", title.content));
     }
 
     feed.entries.iter().for_each(|entry| {
-        if entry.title.is_some() {
-            markdown.push_str(&format!("\n## {}\n", entry.title.clone().unwrap().content));
+        if let Some(title) = &entry.title {
+            markdown.push_str(&format!("\n## {}\n", title.content));
         }
 
-        if entry.updated.is_some() {
-            markdown.push_str(&format!("Updated on:  {}\n\n", entry.updated.unwrap()));
+        if let Some(updated) = &entry.updated {
+            markdown.push_str(&format!("Updated on:  {}\n\n", updated));
         }
 
-        if entry.content.is_some() {
-            markdown.push_str(&parse_html(&entry.content.clone().unwrap().body.unwrap()));
-            markdown.push_str("\n");
+        if let Some(content) = &entry.content {
+            if let Some(body) = &content.body {
+                markdown.push_str(&parse_html(body));
+                markdown.push_str("\n");
+            }
         }
     });
     markdown
@@ -92,26 +101,26 @@ fn parse_atom_type(feed: feed_rs::model::Feed) -> String {
 
 fn parse_rss_type(feed: feed_rs::model::Feed) -> String {
     let mut markdown = String::new();
-    if feed.title.is_some() {
-        markdown.push_str(&format!("# {}\n", feed.title.unwrap().content));
+    if let Some(title) = &feed.title {
+        markdown.push_str(&format!("# {}\n", title.content));
     }
 
-    if feed.description.is_some() {
-        markdown.push_str(&feed.description.unwrap().content);
+    if let Some(description) = &feed.description {
+        markdown.push_str(&description.content);
         markdown.push_str("\n");
     }
 
     feed.entries.iter().for_each(|entry| {
-        if entry.title.is_some() {
-            markdown.push_str(&format!("\n## {}\n", entry.title.clone().unwrap().content));
+        if let Some(title) = &entry.title {
+            markdown.push_str(&format!("\n## {}\n", title.content));
         }
 
-        if entry.published.is_some() {
-            markdown.push_str(&format!("Published on:  {}\n\n", entry.published.unwrap()));
+        if let Some(published) = &entry.published {
+            markdown.push_str(&format!("Published on:  {}\n\n", published));
         }
 
-        if entry.summary.is_some() {
-            markdown.push_str(&parse_html(&entry.summary.clone().unwrap().content));
+        if let Some(summary) = &entry.summary {
+            markdown.push_str(&parse_html(&summary.content));
             markdown.push_str("\n");
         }
     });
@@ -159,4 +168,3 @@ fn parse_rss_type(feed: feed_rs::model::Feed) -> String {
 
 //     markdown
 // }
-

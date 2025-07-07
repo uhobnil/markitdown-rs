@@ -1,3 +1,4 @@
+use crate::error::MarkitdownError;
 use crate::llm;
 use crate::model::{ConversionOptions, DocumentConverter, DocumentConverterResult};
 use exif::Reader;
@@ -13,23 +14,22 @@ impl DocumentConverter for ImageConverter {
         &self,
         local_path: &str,
         args: Option<ConversionOptions>,
-    ) -> Option<DocumentConverterResult> {
+    ) -> Result<DocumentConverterResult, MarkitdownError> {
         if let Some(opts) = &args {
             if let Some(ext) = &opts.file_extension {
                 if ext != ".jpg" {
-                    return None;
+                    return Err(MarkitdownError::InvalidFile(
+                        format!("Expected .jpg file, got {}", ext)
+                    ));
                 }
             }
         }
 
-        if !fs::metadata(local_path).is_ok() {
-            return None;
-        }
+        fs::metadata(local_path)?;
 
-        let file = File::open(local_path).unwrap();
-        let exif = Reader::new()
-            .read_from_container(&mut BufReader::new(&file))
-            .unwrap();
+        let file = File::open(local_path)?;
+        let exif = Reader::new().read_from_container(&mut BufReader::new(&file))
+            .map_err(|e| MarkitdownError::ParseError(format!("Failed to read EXIF data: {}", e)))?;
 
         let mut markdown = String::new();
 
@@ -47,22 +47,21 @@ impl DocumentConverter for ImageConverter {
                     let rt = tokio::runtime::Builder::new_current_thread()
                         .enable_all()
                         .build()
-                        .unwrap();
+                        .map_err(|e| MarkitdownError::Conversion(format!("Failed to create runtime: {}", e)))?;
 
-                    let llm_description = rt.block_on(async {
-                        llm::get_llm_description(local_path, llm_client, llm_model)
-                            .await
-                            .unwrap()
-                    });
-                    markdown.push_str("\n# Description:\n");
-                    markdown.push_str(&llm_description);
+                    if let Some(llm_description) = rt.block_on(async {
+                        llm::get_llm_description(local_path, llm_client, llm_model).await
+                    }) {
+                        markdown.push_str("\n# Description:\n");
+                        markdown.push_str(&llm_description);
+                    }
                 }
             }
         }
 
         println!("markdown:{}", markdown);
 
-        Some(DocumentConverterResult {
+        Ok(DocumentConverterResult {
             title: None,
             text_content: markdown,
         })
@@ -72,18 +71,19 @@ impl DocumentConverter for ImageConverter {
         &self,
         bytes: &[u8],
         args: Option<ConversionOptions>,
-    ) -> Option<DocumentConverterResult> {
+    ) -> Result<DocumentConverterResult, MarkitdownError> {
         if let Some(opts) = &args {
             if let Some(ext) = &opts.file_extension {
                 if ext != ".jpg" {
-                    return None;
+                    return Err(MarkitdownError::InvalidFile(
+                        format!("Expected .jpg file, got {}", ext)
+                    ));
                 }
             }
         }
 
-        let exif = Reader::new()
-            .read_from_container(&mut Cursor::new(bytes))
-            .unwrap();
+        let exif = Reader::new().read_from_container(&mut Cursor::new(bytes))
+            .map_err(|e| MarkitdownError::ParseError(format!("Failed to read EXIF data: {}", e)))?;
 
         let mut markdown = String::new();
 
@@ -101,22 +101,21 @@ impl DocumentConverter for ImageConverter {
                     let rt = tokio::runtime::Builder::new_current_thread()
                         .enable_all()
                         .build()
-                        .unwrap();
+                        .map_err(|e| MarkitdownError::Conversion(format!("Failed to create runtime: {}", e)))?;
 
-                    let llm_description = rt.block_on(async {
-                        llm::get_llm_description("", llm_client, llm_model)
-                            .await
-                            .unwrap()
-                    });
-                    markdown.push_str("\n# Description:\n");
-                    markdown.push_str(&llm_description);
+                    if let Some(llm_description) = rt.block_on(async {
+                        llm::get_llm_description("", llm_client, llm_model).await
+                    }) {
+                        markdown.push_str("\n# Description:\n");
+                        markdown.push_str(&llm_description);
+                    }
                 }
             }
         }
 
         println!("markdown:{}", markdown);
 
-        Some(DocumentConverterResult {
+        Ok(DocumentConverterResult {
             title: None,
             text_content: markdown,
         })

@@ -1,11 +1,7 @@
-use markitdown::{
-    docx::DocxConverter,
-    model::{ConversionOptions, DocumentConverter},
-};
+use markitdown::{model::ConversionOptions, MarkItDown};
 
 #[test]
 fn test_docx_conversion() {
-    let converter = DocxConverter;
     let options = ConversionOptions {
         file_extension: Some(".docx".to_string()),
         url: None,
@@ -13,14 +9,17 @@ fn test_docx_conversion() {
         llm_model: None,
     };
 
-    let result = converter.convert("tests/test_files/test.docx", Some(options));
-    write_to_file(&result.as_ref().unwrap().text_content);
-    assert!(result.is_some());
+    let markitdown = MarkItDown::new();
+
+    let result = markitdown.convert("tests/test_files/test.docx", Some(options));
+    assert!(result.is_ok());
+    let unwrapped_result = result.unwrap();
+    assert!(unwrapped_result.is_some());
+    write_to_file(&unwrapped_result.unwrap().text_content);
 }
 
 #[test]
 fn test_docx_bytes_conversion() {
-    let converter = DocxConverter;
     let options = ConversionOptions {
         file_extension: Some(".docx".to_string()),
         url: None,
@@ -28,8 +27,11 @@ fn test_docx_bytes_conversion() {
         llm_model: None,
     };
 
-    let result = converter.convert_bytes(include_bytes!("./test_files/test.docx"), Some(options));
-    assert!(result.is_some());
+    let markitdown = MarkItDown::new();
+
+    let result = markitdown.convert_bytes(include_bytes!("./test_files/test.docx"), Some(options));
+    assert!(result.is_ok());
+    assert!(result.unwrap().is_some());
 }
 
 fn write_to_file(content: &str) {

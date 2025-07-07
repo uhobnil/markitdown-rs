@@ -1,5 +1,6 @@
 pub mod csv;
 pub mod docx;
+pub mod error;
 pub mod excel;
 pub mod html;
 pub mod image;
@@ -11,6 +12,7 @@ pub mod rss;
 
 use csv::CsvConverter;
 use docx::DocxConverter;
+use error::MarkitdownError;
 use excel::ExcelConverter;
 use html::HtmlConverter;
 use image::ImageConverter;
@@ -112,7 +114,7 @@ impl MarkItDown {
         &self,
         source: &str,
         mut args: Option<ConversionOptions>,
-    ) -> Option<DocumentConverterResult> {
+    ) -> Result<Option<DocumentConverterResult>, MarkitdownError> {
         if let Some(ref mut options) = args {
             if options.file_extension.is_none() {
                 options.file_extension = self.detect_file_type(source);
@@ -129,62 +131,85 @@ impl MarkItDown {
         if let Some(opts) = &args {
             if let Some(ext) = &opts.file_extension {
                 if ext == ".zip" {
-                    let data = fs::read(source).unwrap();
+                    let data = fs::read(source)?;
                     let cursor = Cursor::new(data);
-                    let mut archive = ZipArchive::new(cursor).expect("Failed to read ZIP archive");
+                    let mut archive = ZipArchive::new(cursor)?;
 
-                    let zip_name = Path::new(source).file_name().unwrap().to_str().unwrap();
+                    let zip_name = Path::new(source)
+                        .file_name()
+                        .ok_or_else(|| {
+                            MarkitdownError::InvalidFile("No filename found".to_string())
+                        })?
+                        .to_str()
+                        .ok_or_else(|| {
+                            MarkitdownError::InvalidFile("Invalid filename encoding".to_string())
+                        })?;
                     let mut markdown =
                         String::from(format!("Content from the zip file {}\n", zip_name).as_str());
 
                     for i in 0..archive.len() {
-                        let mut file = archive
-                            .by_index(i)
-                            .expect("Failed to access file in ZIP archive");
+                        let mut file = archive.by_index(i)?;
                         let file_name = file.name().to_string();
-                        let dir = tempdir().unwrap();
+                        let dir = tempdir()?;
                         let file_path = dir.path().join(&file_name);
-                        let mut temp_file = fs::File::create(&file_path).unwrap();
-                        io::copy(&mut file, &mut temp_file).unwrap();
+                        let mut temp_file = fs::File::create(&file_path)?;
+                        io::copy(&mut file, &mut temp_file)?;
                         for converter in &self.converters {
                             let file_args = Some(ConversionOptions {
-                                file_extension: self.detect_file_type(file_path.to_str().unwrap()),
+                                file_extension: self.detect_file_type(
+                                    file_path.to_str().ok_or_else(|| {
+                                        MarkitdownError::InvalidFile(
+                                            "Invalid path encoding".to_string(),
+                                        )
+                                    })?,
+                                ),
                                 url: None,
                                 llm_client: None,
                                 llm_model: None,
                             });
-                            if let Some(result) =
-                                converter.convert(&file_path.to_str().unwrap(), file_args.clone())
-                            {
-                                markdown
-                                    .push_str(format!("\n## File: {}\n\n", &file_name).as_str());
-                                markdown.push_str(format!("{}\n", result.text_content).as_str());
+                            match converter.convert(
+                                file_path.to_str().ok_or_else(|| {
+                                    MarkitdownError::InvalidFile(
+                                        "Invalid path encoding".to_string(),
+                                    )
+                                })?,
+                                file_args.clone(),
+                            ) {
+                                Ok(result) => {
+                                    markdown.push_str(
+                                        format!("\n## File: {}\n\n", &file_name).as_str(),
+                                    );
+                                    markdown
+                                        .push_str(format!("{}\n", result.text_content).as_str());
+                                }
+                                Err(_) => {} // Skip if converter can't handle this file
                             }
                         }
 
-                        std::fs::remove_file(&file_path).expect("Failed to delete the file");
+                        std::fs::remove_file(&file_path)?;
                     }
-                    return Some(DocumentConverterResult {
+                    return Ok(Some(DocumentConverterResult {
                         title: None,
                         text_content: markdown,
-                    });
+                    }));
                 }
             }
         }
 
         for converter in &self.converters {
-            if let Some(result) = converter.convert(source, args.clone()) {
-                return Some(result);
+            match converter.convert(source, args.clone()) {
+                Ok(result) => return Ok(Some(result)),
+                Err(_) => continue, // Try next converter
             }
         }
-        None
+        Ok(None)
     }
 
     pub fn convert_bytes(
         &self,
         bytes: &[u8],
         mut args: Option<ConversionOptions>,
-    ) -> Option<DocumentConverterResult> {
+    ) -> Result<Option<DocumentConverterResult>, MarkitdownError> {
         if let Some(ref mut options) = args {
             if options.file_extension.is_none() {
                 options.file_extension = self.detect_bytes(bytes);
@@ -202,20 +227,17 @@ impl MarkItDown {
             if let Some(ext) = &opts.file_extension {
                 if ext == ".zip" {
                     let cursor = Cursor::new(bytes);
-                    let mut archive = ZipArchive::new(cursor).expect("Failed to read ZIP archive");
+                    let mut archive = ZipArchive::new(cursor)?;
 
                     let mut markdown = String::from("");
 
                     for i in 0..archive.len() {
-                        let mut file = archive
-                            .by_index(i)
-                            .expect("Failed to access file in ZIP archive");
+                        let mut file = archive.by_index(i)?;
                         let file_name = file.name().to_string();
 
                         // Read file contents into memory
                         let mut file_contents = Vec::new();
-                        file.read_to_end(&mut file_contents)
-                            .expect("Failed to read file from ZIP");
+                        file.read_to_end(&mut file_contents)?;
 
                         for converter in &self.converters {
                             let file_args = Some(ConversionOptions {
@@ -224,28 +246,32 @@ impl MarkItDown {
                                 llm_client: None,
                                 llm_model: None,
                             });
-                            if let Some(result) =
-                                converter.convert_bytes(&file_contents, file_args.clone())
-                            {
-                                markdown
-                                    .push_str(format!("\n## File: {}\n\n", &file_name).as_str());
-                                markdown.push_str(format!("{}\n", result.text_content).as_str());
+                            match converter.convert_bytes(&file_contents, file_args.clone()) {
+                                Ok(result) => {
+                                    markdown.push_str(
+                                        format!("\n## File: {}\n\n", &file_name).as_str(),
+                                    );
+                                    markdown
+                                        .push_str(format!("{}\n", result.text_content).as_str());
+                                }
+                                Err(_) => {} // Skip if converter can't handle this file
                             }
                         }
                     }
-                    return Some(DocumentConverterResult {
+                    return Ok(Some(DocumentConverterResult {
                         title: None,
                         text_content: markdown,
-                    });
+                    }));
                 }
             }
         }
 
         for converter in &self.converters {
-            if let Some(result) = converter.convert_bytes(bytes, args.clone()) {
-                return Some(result);
+            match converter.convert_bytes(bytes, args.clone()) {
+                Ok(result) => return Ok(Some(result)),
+                Err(_) => continue, // Try next converter
             }
         }
-        None
+        Ok(None)
     }
 }

@@ -1,11 +1,7 @@
-use markitdown::{
-    image::ImageConverter,
-    model::{ConversionOptions, DocumentConverter},
-};
+use markitdown::{model::ConversionOptions, MarkItDown};
 
 #[test]
 fn test_image_conversion() {
-    let converter = ImageConverter;
     let mut options = ConversionOptions {
         file_extension: Some(".jpg".to_string()),
         url: None,
@@ -18,13 +14,15 @@ fn test_image_conversion() {
         options.llm_model = Some("gemini-2.0-flash".to_string());
     };
 
-    let result = converter.convert("tests/test_files/test.jpg", Some(options));
-    assert!(result.is_some());
+    let markitdown = MarkItDown::new();
+
+    let result = markitdown.convert("tests/test_files/test.jpg", Some(options));
+    assert!(result.is_ok());
+    assert!(result.unwrap().is_some());
 }
 
 #[test]
 fn test_image_bytes_conversion() {
-    let converter = ImageConverter;
     let mut options = ConversionOptions {
         file_extension: Some(".jpg".to_string()),
         url: None,
@@ -37,7 +35,9 @@ fn test_image_bytes_conversion() {
         options.llm_model = Some("gemini-2.0-flash".to_string());
     };
 
-    let result = converter.convert_bytes(include_bytes!("./test_files/test.jpg"), Some(options));
-    assert!(result.is_some());
-}
+    let markitdown = MarkItDown::new();
 
+    let result = markitdown.convert_bytes(include_bytes!("./test_files/test.jpg"), Some(options));
+    assert!(result.is_ok());
+    assert!(result.unwrap().is_some());
+}

@@ -1,10 +1,11 @@
+use crate::error::MarkitdownError;
 use crate::model::{ConversionOptions, DocumentConverter, DocumentConverterResult};
 use docx_rust::{
     document::{BodyContent, TableCellContent, TableRowContent},
     DocxFile,
 };
-use std::io::Cursor;
 use std::fs;
+use std::io::Cursor;
 
 pub struct DocxConverter;
 
@@ -13,21 +14,23 @@ impl DocumentConverter for DocxConverter {
         &self,
         local_path: &str,
         args: Option<ConversionOptions>,
-    ) -> Option<DocumentConverterResult> {
+    ) -> Result<DocumentConverterResult, MarkitdownError> {
         if let Some(opts) = &args {
             if let Some(ext) = &opts.file_extension {
                 if ext != ".docx" {
-                    return None;
+                    return Err(MarkitdownError::InvalidFile(
+                        format!("Expected .docx file, got {}", ext)
+                    ));
                 }
             }
         }
 
-        if !fs::metadata(local_path).is_ok() {
-            return None;
-        }
+        fs::metadata(local_path)?;
 
-        let docx_file = DocxFile::from_file(local_path).expect("Failed to read DOCX file");
-        let doc = docx_file.parse().unwrap();
+        let docx_file = DocxFile::from_file(local_path)
+            .map_err(|e| MarkitdownError::ParseError(format!("Failed to read DOCX file: {}", e)))?;
+        let doc = docx_file.parse()
+            .map_err(|e| MarkitdownError::ParseError(format!("Failed to parse DOCX file: {}", e)))?;
 
         let mut markdown = String::new();
 
@@ -85,7 +88,7 @@ impl DocumentConverter for DocxConverter {
             }
         }
 
-        Some(DocumentConverterResult {
+        Ok(DocumentConverterResult {
             title: None,
             text_content: markdown,
         })
@@ -95,19 +98,23 @@ impl DocumentConverter for DocxConverter {
         &self,
         bytes: &[u8],
         args: Option<ConversionOptions>,
-    ) -> Option<DocumentConverterResult> {
+    ) -> Result<DocumentConverterResult, MarkitdownError> {
         if let Some(opts) = &args {
             if let Some(ext) = &opts.file_extension {
                 if ext != ".docx" {
-                    return None;
+                    return Err(MarkitdownError::InvalidFile(
+                        format!("Expected .docx file, got {}", ext)
+                    ));
                 }
             }
         }
 
         let reader = Cursor::new(bytes);
 
-        let docx_file = DocxFile::from_reader(reader).expect("Failed to read DOCX file");
-        let doc = docx_file.parse().unwrap();
+        let docx_file = DocxFile::from_reader(reader)
+            .map_err(|e| MarkitdownError::ParseError(format!("Failed to read DOCX file: {}", e)))?;
+        let doc = docx_file.parse()
+            .map_err(|e| MarkitdownError::ParseError(format!("Failed to parse DOCX file: {}", e)))?;
 
         let mut markdown = String::new();
 
@@ -165,7 +172,7 @@ impl DocumentConverter for DocxConverter {
             }
         }
 
-        Some(DocumentConverterResult {
+        Ok(DocumentConverterResult {
             title: None,
             text_content: markdown,
         })

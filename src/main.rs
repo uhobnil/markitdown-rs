@@ -16,7 +16,7 @@ struct Cli {
     format: Option<String>,
 }
 
-fn main() {
+fn main() -> Result<(), Box<dyn std::error::Error>> {
     let cli = Cli::parse();
 
     let output = match cli.output {
@@ -29,6 +29,10 @@ fn main() {
             if format == "html" || format == "xlsx" || format == "pdf" {
                 format
             } else {
+                eprintln!(
+                    "Warning: Unsupported format '{}'. Using auto-detection.",
+                    format
+                );
                 "".to_string()
             }
         }
@@ -36,6 +40,10 @@ fn main() {
     };
 
     let input_file = cli.input.trim().to_string();
+
+    if !std::path::Path::new(&input_file).exists() {
+        return Err(format!("Error: File '{}' not found", input_file).into());
+    }
 
     let markitdown = MarkItDown::new();
 
@@ -51,11 +59,22 @@ fn main() {
             llm_client: None,
             llm_model: None,
         }),
-    );
+    )?;
 
-    if output == "console" {
-        println!("{}", &result.as_ref().unwrap().text_content);
+    if let Some(doc_result) = result {
+        if output == "console" {
+            println!("{}", &doc_result.text_content);
+        } else {
+            fs::write(&output, &doc_result.text_content)
+                .map_err(|e| format!("Failed to write to '{}': {}", output, e))?;
+            eprintln!("Successfully converted to: {}", output);
+        }
     } else {
-        fs::write(output, &result.as_ref().unwrap().text_content).expect("Could not write output");
+        eprintln!(
+            "Error: Unable to convert file '{}'. The file format may not be supported.",
+            input_file
+        );
+        std::process::exit(1);
     }
+    Ok(())
 }

@@ -1,4 +1,5 @@
 use crate::model::{ConversionOptions, DocumentConverter, DocumentConverterResult};
+use crate::error::MarkitdownError;
 use csv::ReaderBuilder;
 use std::fs::File;
 
@@ -9,19 +10,20 @@ impl DocumentConverter for CsvConverter {
         &self,
         local_path: &str,
         args: Option<ConversionOptions>,
-    ) -> Option<DocumentConverterResult> {
+    ) -> Result<DocumentConverterResult, MarkitdownError> {
         if let Some(opts) = &args {
             if let Some(ext) = &opts.file_extension {
                 if ext != ".csv" {
-                    return None;
+                    return Err(MarkitdownError::InvalidFile(
+                        format!("Expected .csv file, got {}", ext)
+                    ));
                 }
             }
         }
 
         let mut markdown = String::new();
-        let mut rdr = ReaderBuilder::new()
-            .has_headers(false)
-            .from_reader(File::open(local_path).unwrap());
+        let file = File::open(local_path)?;
+        let mut rdr = ReaderBuilder::new().has_headers(false).from_reader(file);
         for result in rdr.records() {
             match result {
                 Ok(record) => {
@@ -38,21 +40,23 @@ impl DocumentConverter for CsvConverter {
                 }
             }
         }
-        return Some(DocumentConverterResult {
+        Ok(DocumentConverterResult {
             title: None,
             text_content: markdown,
-        });
+        })
     }
 
     fn convert_bytes(
         &self,
         bytes: &[u8],
         args: Option<ConversionOptions>,
-    ) -> Option<DocumentConverterResult> {
+    ) -> Result<DocumentConverterResult, MarkitdownError> {
         if let Some(opts) = &args {
             if let Some(ext) = &opts.file_extension {
                 if ext != ".csv" {
-                    return None;
+                    return Err(MarkitdownError::InvalidFile(
+                        format!("Expected .csv file, got {}", ext)
+                    ));
                 }
             }
         }
@@ -74,9 +78,9 @@ impl DocumentConverter for CsvConverter {
                 }
             }
         }
-        return Some(DocumentConverterResult {
+        Ok(DocumentConverterResult {
             title: None,
             text_content: markdown,
-        });
+        })
     }
 }

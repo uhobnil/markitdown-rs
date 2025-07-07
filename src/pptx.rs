@@ -1,3 +1,4 @@
+use crate::error::MarkitdownError;
 use crate::model::{ConversionOptions, DocumentConverter, DocumentConverterResult};
 use quick_xml::{events::Event, reader::Reader};
 use std::fs;
@@ -11,22 +12,22 @@ impl DocumentConverter for PptxConverter {
         &self,
         local_path: &str,
         args: Option<ConversionOptions>,
-    ) -> Option<DocumentConverterResult> {
+    ) -> Result<DocumentConverterResult, MarkitdownError> {
         if let Some(opts) = &args {
             if let Some(ext) = &opts.file_extension {
                 if ext != ".pptx" {
-                    return None;
+                    return Err(MarkitdownError::InvalidFile(
+                        format!("Expected .pptx file, got {}", ext)
+                    ));
                 }
             }
         }
 
-        if !fs::metadata(local_path).is_ok() {
-            return None;
-        }
+        fs::metadata(local_path)?;
 
-        let data = fs::read(local_path).unwrap();
+        let data = fs::read(local_path)?;
         let cursor = Cursor::new(data);
-        let mut archive = ZipArchive::new(cursor).expect("Failed to read ZIP archive");
+        let mut archive = ZipArchive::new(cursor)?;
 
         let mut markdown = String::new();
         let mut slide = 1;
@@ -34,13 +35,13 @@ impl DocumentConverter for PptxConverter {
         for i in 0..archive.len() {
             let mut file = archive
                 .by_index(i)
-                .expect("Failed to access file in ZIP archive");
+                .map_err(|e| MarkitdownError::Zip(format!("Failed to access file in ZIP archive: {}", e)))?;
             if file.name().starts_with("ppt/slides/") && file.name().ends_with(".xml") {
                 markdown.push_str(&format!("<!-- Slide number: {} -->\n\n", slide));
                 slide += 1;
                 let mut content = String::new();
                 file.read_to_string(&mut content)
-                    .expect("Failed to read slide content");
+                    .map_err(|e| MarkitdownError::ParseError(format!("Failed to read slide content: {}", e)))?;
 
                 let mut reader = Reader::from_str(&content);
 
@@ -54,22 +55,22 @@ impl DocumentConverter for PptxConverter {
                 }
                 loop {
                     let mut found_tables = Vec::new();
-                    match reader.read_event_into(&mut buf).unwrap() {
+                    match reader.read_event_into(&mut buf).map_err(|e| MarkitdownError::ParseError(format!("Failed to read XML event: {}", e)))? {
                         Event::Start(element) => {
                             if let b"p:txBody" = element.name().as_ref() {
                                 let mut text_buf = Vec::new();
                                 loop {
                                     text_buf.clear();
-                                    match reader.read_event_into(&mut text_buf).unwrap() {
+                                    match reader.read_event_into(&mut text_buf).map_err(|e| MarkitdownError::ParseError(format!("Failed to read XML event: {}", e)))? {
                                         Event::Start(element) => match element.name().as_ref() {
                                             b"a:t" => loop {
                                                 println!("slide: {:?}", slide);
                                                 let mut tc_buf = Vec::new();
-                                                match reader.read_event_into(&mut tc_buf).unwrap() {
+                                                match reader.read_event_into(&mut tc_buf).map_err(|e| MarkitdownError::ParseError(format!("Failed to read XML event: {}", e)))? {
                                                     Event::Text(text) => {
                                                         println!("text: {:?}", text);
                                                         markdown
-                                                            .push_str(&text.unescape().unwrap());
+                                                            .push_str(&text.unescape().map_err(|e| MarkitdownError::ParseError(format!("Failed to unescape text: {}", e)))?);
                                                     }
                                                     Event::End(element) => {
                                                         if element.name().as_ref() == b"a:t" {
@@ -103,7 +104,7 @@ impl DocumentConverter for PptxConverter {
                                 let mut row_index = 0;
                                 loop {
                                     skip_buf.clear();
-                                    match reader.read_event_into(&mut skip_buf).unwrap() {
+                                    match reader.read_event_into(&mut skip_buf).map_err(|e| MarkitdownError::ParseError(format!("Failed to read XML event: {}", e)))? {
                                         Event::Start(element) => match element.name().as_ref() {
                                             b"a:tr" => {
                                                 stats.rows.push(vec![]);
@@ -111,10 +112,10 @@ impl DocumentConverter for PptxConverter {
                                             }
                                             b"a:tc" => loop {
                                                 let mut tc_buf = Vec::new();
-                                                match reader.read_event_into(&mut tc_buf).unwrap() {
+                                                match reader.read_event_into(&mut tc_buf).map_err(|e| MarkitdownError::ParseError(format!("Failed to read XML event: {}", e)))? {
                                                     Event::Text(text) => {
                                                         stats.rows[row_index].push(
-                                                            text.unescape().unwrap().to_string(),
+                                                            text.unescape().map_err(|e| MarkitdownError::ParseError(format!("Failed to unescape text: {}", e)))?.to_string(),
                                                         );
                                                     }
                                                     Event::End(_) => break,
@@ -165,7 +166,7 @@ impl DocumentConverter for PptxConverter {
             }
         }
 
-        Some(DocumentConverterResult {
+        Ok(DocumentConverterResult {
             title: None,
             text_content: markdown,
         })
@@ -175,17 +176,19 @@ impl DocumentConverter for PptxConverter {
         &self,
         bytes: &[u8],
         args: Option<ConversionOptions>,
-    ) -> Option<DocumentConverterResult> {
+    ) -> Result<DocumentConverterResult, MarkitdownError> {
         if let Some(opts) = &args {
             if let Some(ext) = &opts.file_extension {
                 if ext != ".pptx" {
-                    return None;
+                    return Err(MarkitdownError::InvalidFile(
+                        format!("Expected .pptx file, got {}", ext)
+                    ));
                 }
             }
         }
 
         let cursor = Cursor::new(bytes);
-        let mut archive = ZipArchive::new(cursor).expect("Failed to read ZIP archive");
+        let mut archive = ZipArchive::new(cursor)?;
 
         let mut markdown = String::new();
         let mut slide = 1;
@@ -193,13 +196,13 @@ impl DocumentConverter for PptxConverter {
         for i in 0..archive.len() {
             let mut file = archive
                 .by_index(i)
-                .expect("Failed to access file in ZIP archive");
+                .map_err(|e| MarkitdownError::Zip(format!("Failed to access file in ZIP archive: {}", e)))?;
             if file.name().starts_with("ppt/slides/") && file.name().ends_with(".xml") {
                 markdown.push_str(&format!("<!-- Slide number: {} -->\n\n", slide));
                 slide += 1;
                 let mut content = String::new();
                 file.read_to_string(&mut content)
-                    .expect("Failed to read slide content");
+                    .map_err(|e| MarkitdownError::ParseError(format!("Failed to read slide content: {}", e)))?;
 
                 let mut reader = Reader::from_str(&content);
 
@@ -213,13 +216,13 @@ impl DocumentConverter for PptxConverter {
                 }
                 loop {
                     let mut found_tables = Vec::new();
-                    match reader.read_event_into(&mut buf).unwrap() {
+                    match reader.read_event_into(&mut buf).map_err(|e| MarkitdownError::ParseError(format!("Failed to read XML event: {}", e)))? {
                         Event::Start(element) => {
                             if let b"p:txBody" = element.name().as_ref() {
                                 let mut text_buf = Vec::new();
                                 loop {
                                     text_buf.clear();
-                                    match reader.read_event_into(&mut text_buf).unwrap() {
+                                    match reader.read_event_into(&mut text_buf).map_err(|e| MarkitdownError::ParseError(format!("Failed to read XML event: {}", e)))? {
                                         Event::Start(element) => {
                                             if element.name().as_ref() == b"a:t" {
                                                 loop {
@@ -267,7 +270,7 @@ impl DocumentConverter for PptxConverter {
                                 let mut row_index = 0;
                                 loop {
                                     skip_buf.clear();
-                                    match reader.read_event_into(&mut skip_buf).unwrap() {
+                                    match reader.read_event_into(&mut skip_buf).map_err(|e| MarkitdownError::ParseError(format!("Failed to read XML event: {}", e)))? {
                                         Event::Start(element) => match element.name().as_ref() {
                                             b"a:tr" => {
                                                 stats.rows.push(vec![]);
@@ -275,10 +278,10 @@ impl DocumentConverter for PptxConverter {
                                             }
                                             b"a:tc" => loop {
                                                 let mut tc_buf = Vec::new();
-                                                match reader.read_event_into(&mut tc_buf).unwrap() {
+                                                match reader.read_event_into(&mut tc_buf).map_err(|e| MarkitdownError::ParseError(format!("Failed to read XML event: {}", e)))? {
                                                     Event::Text(text) => {
                                                         stats.rows[row_index].push(
-                                                            text.unescape().unwrap().to_string(),
+                                                            text.unescape().map_err(|e| MarkitdownError::ParseError(format!("Failed to unescape text: {}", e)))?.to_string(),
                                                         );
                                                     }
                                                     Event::End(_) => break,
@@ -329,7 +332,7 @@ impl DocumentConverter for PptxConverter {
             }
         }
 
-        Some(DocumentConverterResult {
+        Ok(DocumentConverterResult {
             title: None,
             text_content: markdown,
         })

@@ -1,5 +1,6 @@
 use pdf_extract;
 
+use crate::error::MarkitdownError;
 use crate::model::{ConversionOptions, DocumentConverter, DocumentConverterResult};
 
 pub struct PdfConverter;
@@ -9,18 +10,21 @@ impl DocumentConverter for PdfConverter {
         &self,
         local_path: &str,
         args: Option<ConversionOptions>,
-    ) -> Option<DocumentConverterResult> {
+    ) -> Result<DocumentConverterResult, MarkitdownError> {
         if let Some(opts) = &args {
             if let Some(ext) = &opts.file_extension {
                 if ext != ".pdf" {
-                    return None;
+                    return Err(MarkitdownError::InvalidFile(
+                        format!("Expected .pdf file, got {}", ext)
+                    ));
                 }
             }
         }
 
-        let bytes = std::fs::read(local_path).unwrap();
-        let text_content = pdf_extract::extract_text_from_mem(&bytes).unwrap();
-        Some(DocumentConverterResult {
+        let bytes = std::fs::read(local_path)?;
+        let text_content = pdf_extract::extract_text_from_mem(&bytes)
+            .map_err(|e| MarkitdownError::ParseError(format!("Failed to extract text from PDF: {}", e)))?;
+        Ok(DocumentConverterResult {
             title: None,
             text_content,
         })
@@ -48,17 +52,20 @@ impl DocumentConverter for PdfConverter {
         &self,
         bytes: &[u8],
         args: Option<ConversionOptions>,
-    ) -> Option<DocumentConverterResult> {
+    ) -> Result<DocumentConverterResult, MarkitdownError> {
         if let Some(opts) = &args {
             if let Some(ext) = &opts.file_extension {
                 if ext != ".pdf" {
-                    return None;
+                    return Err(MarkitdownError::InvalidFile(
+                        format!("Expected .pdf file, got {}", ext)
+                    ));
                 }
             }
         }
 
-        let text_content = pdf_extract::extract_text_from_mem(bytes).unwrap();
-        Some(DocumentConverterResult {
+        let text_content = pdf_extract::extract_text_from_mem(bytes)
+            .map_err(|e| MarkitdownError::ParseError(format!("Failed to extract text from PDF: {}", e)))?;
+        Ok(DocumentConverterResult {
             title: None,
             text_content,
         })

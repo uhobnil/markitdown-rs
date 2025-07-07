@@ -61,8 +61,12 @@ let mut md = MarkItDown::new();
 #### Convert a File
 
 ```rust
-use markitdown::{ConversionOptions, DocumentConverterResult};
+use markitdown::{ConversionOptions, DocumentConverterResult, MarkItDown};
 
+// Basic conversion - file type is auto-detected
+let result = md.convert("path/to/file.xlsx", None)?;
+
+// Or explicitly specify options
 let options = ConversionOptions {
     file_extension: Some(".xlsx".to_string()),
     url: None,
@@ -70,10 +74,9 @@ let options = ConversionOptions {
     llm_model: None,
 };
 
-let result: Option<DocumentConverterResult> = md.convert("path/to/file.xlsx", Some(options));
+let result = md.convert("path/to/file.xlsx", Some(options))?;
 
-// To use Large Language Models for image descriptions, provide llm_client and llm_model, like:
-
+// To use Large Language Models for image descriptions
 let options = ConversionOptions {
     file_extension: Some(".jpg".to_string()),
     url: None,
@@ -81,7 +84,7 @@ let options = ConversionOptions {
     llm_model: Some("gemini-2.0-flash".to_string()),
 };
 
-let result: Option<DocumentConverterResult> = md.convert("path/to/file.jpg", Some(options));
+let result = md.convert("path/to/file.jpg", Some(options))?;
 
 if let Some(conversion_result) = result {
     println!("Converted Text: {}", conversion_result.text_content);
@@ -90,17 +93,59 @@ if let Some(conversion_result) = result {
 }
 ```
 
+#### Convert from Bytes
+
+```rust
+use markitdown::{ConversionOptions, MarkItDown};
+
+let file_bytes = std::fs::read("path/to/file.pdf")?;
+
+// Auto-detect file type from bytes
+let result = md.convert_bytes(&file_bytes, None)?;
+
+// Or specify options explicitly
+let options = ConversionOptions {
+    file_extension: Some(".pdf".to_string()),
+    url: None,
+    llm_client: None,
+    llm_model: None,
+};
+
+let result = md.convert_bytes(&file_bytes, Some(options))?;
+
+if let Some(conversion_result) = result {
+    println!("Converted Text: {}", conversion_result.text_content);
+}
+```
+
 #### Register a Custom Converter
 
 You can extend MarkItDown by implementing the `DocumentConverter` trait for your custom converters and registering them:
 
 ```rust
-use markitdown::{DocumentConverter, MarkItDown};
+use markitdown::{DocumentConverter, DocumentConverterResult, ConversionOptions, MarkItDown};
+use markitdown::error::MarkitdownError;
 
 struct MyCustomConverter;
 
 impl DocumentConverter for MyCustomConverter {
-    // Implement the required methods here
+    fn convert(
+        &self,
+        local_path: &str,
+        args: Option<ConversionOptions>,
+    ) -> Result<DocumentConverterResult, MarkitdownError> {
+        // Implement file conversion logic
+        todo!()
+    }
+
+    fn convert_bytes(
+        &self,
+        bytes: &[u8],
+        args: Option<ConversionOptions>,
+    ) -> Result<DocumentConverterResult, MarkitdownError> {
+        // Implement bytes conversion logic
+        todo!()
+    }
 }
 
 let mut md = MarkItDown::new();

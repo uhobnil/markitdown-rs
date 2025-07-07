@@ -1,4 +1,5 @@
 use serde::{Deserialize, Serialize};
+use crate::error::MarkitdownError;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct DocumentConverterResult {
@@ -19,11 +20,11 @@ pub trait DocumentConverter {
         &self,
         local_path: &str,
         args: Option<ConversionOptions>,
-    ) -> Option<DocumentConverterResult>;
+    ) -> Result<DocumentConverterResult, MarkitdownError>;
 
     fn convert_bytes(
         &self,
         bytes: &[u8],
         args: Option<ConversionOptions>,
-    ) -> Option<DocumentConverterResult>;
+    ) -> Result<DocumentConverterResult, MarkitdownError>;
 }
