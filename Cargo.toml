@@ -1,6 +1,6 @@
 [package]
 name = "markitdown"
-version = "0.1.10"
+version = "0.1.11"
 edition = "2021"
 description = "A Rust library designed to facilitate the conversion of various document formats into markdown text."
 repository = "https://github.com/uhobnil/markitdown-rs"
